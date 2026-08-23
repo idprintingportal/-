@@ -1203,8 +1203,7 @@
   }
 
   const AUTH_EMAIL = "oneplus777000@gmail.com";
-  const INITIAL_PASS = "Pass@123";
-  const EXPIRED_PASS = "Harshal@6195";
+  const DEFAULT_PASS = "Pass@123";
   const MERCHANT_UPI_ID = "SPICED92849611072221935@yesbankltd";
 
   // ==========================================================
@@ -1228,18 +1227,9 @@
     const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
 
     if (daysRemaining <= 0) {
-      localStorage.removeItem('system_auth_pwd');
       return 0;
     }
     return daysRemaining;
-  }
-
-  function getStoredPassword() {
-    const remaining = checkAndHandleExpiry();
-    if (remaining === 0) {
-      return EXPIRED_PASS;
-    }
-    return localStorage.getItem('system_auth_pwd') || INITIAL_PASS;
   }
 
   function updateValidityDisplay() {
@@ -1320,24 +1310,6 @@
     loginScreen.style.display = 'block';
     loginPass.value = '';
   }
-
-  // Simulated Payment Completion Handler (Triggered after successful payment simulation or verification)
-  window.simulatePaymentSuccess = function() {
-    const currentExp = getActiveValidityExpiryTime() || Date.now();
-    const baseTime = Math.max(Date.now(), currentExp);
-    const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
-
-    localStorage.setItem('system_plan_expiry_time', newExpTime.toString());
-    localStorage.setItem('system_active_plan_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
-
-    document.getElementById('qrPaymentModal').classList.remove('active-modal');
-    document.getElementById('planSelectionScreen').style.display = 'none';
-    mainApp.style.display = 'block';
-
-    updateValidityDisplay();
-    initAllCanvases();
-    cleanupOldHistoryRecords();
-  };
 
   // ==========================================================
   // INDEXEDDB DYNAMIC STORAGE ENGINE
@@ -1523,9 +1495,8 @@
     const oldP = oldPassInput.value.trim();
     const newP = newPassInput.value.trim();
     const confP = confirmPassInput.value.trim();
-    const currentActivePass = getStoredPassword().trim();
 
-    if (oldP !== currentActivePass && oldP !== INITIAL_PASS && oldP !== EXPIRED_PASS) {
+    if (oldP !== DEFAULT_PASS) {
       pwdStatusMsg.innerText = "❌ पुराना पासवर्ड गलत है!";
       pwdStatusMsg.style.color = "#ef4444";
       pwdStatusMsg.style.display = "block";
@@ -1561,9 +1532,9 @@
   function handleLogin() {
     const inputEmail = loginEmail.value.trim().toLowerCase();
     const inputPass = loginPass.value.trim();
-    const currentPass = getStoredPassword().trim();
+    const activePass = localStorage.getItem('system_auth_pwd') || DEFAULT_PASS;
 
-    if (inputEmail === AUTH_EMAIL.toLowerCase() && inputPass === currentPass) {
+    if (inputEmail === AUTH_EMAIL.toLowerCase() && inputPass === activePass) {
       sessionStorage.setItem('isLoggedIn', 'true');
       loginScreen.style.display = 'none';
       changePwdScreen.style.display = 'none';
@@ -2261,9 +2232,9 @@
     saveToHistory('4x6 Photo A4 Sheet', fileName, blob, 'application/pdf');
   });
 
-  // ==========================================
+  // ==========================================================
   // TAB 5: PDF ARRANGER ENGINE (DRAG & DROP / HOLD & MOVE)
-  // ==========================================
+  // ==========================================================
   let arrangedPdfPagesList = [];
   let draggedArrangerIdx = null;
 
