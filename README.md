@@ -542,7 +542,7 @@
       font-weight: 600;
     }
 
-    /* Strict Modal System */
+    /* Modal System */
     .generic-modal {
       display: none !important;
       position: fixed;
@@ -681,7 +681,7 @@
   </div>
 </div>
 
-<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan' and 'Cancel' Buttons) -->
+<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan' & 'Cancel' Buttons) -->
 <div id="qrPaymentModal" class="generic-modal">
   <div class="generic-modal-box">
     <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay via UPI</div>
@@ -1222,7 +1222,7 @@
 
   function checkAndHandleExpiry() {
     const expTime = getActiveValidityExpiryTime();
-    if (!expTime) return 0; // If no plan purchased yet
+    if (!expTime) return 0;
 
     const remainingMs = expTime - Date.now();
     const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
@@ -1268,7 +1268,7 @@
     document.getElementById('historyTabBtn').innerText = `📂 History (${retDays}-Day)`;
     document.getElementById('historyRetentionBadge').innerText = `Automatic ${retDays}-Day Storage • All Features Supported`;
     document.getElementById('historyHeaderTitle').innerText = `${retDays}-Day Print & Download History`;
-    document.getElementById('historyDescText').innerText = `आपके द्वारा पिछले ${retDays} दिनों में डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं।`;
+    document.getElementById('historyDescText').innerText = `आपके द्वारा डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं।`;
   }
 
   // ==========================================================
@@ -1319,24 +1319,6 @@
     document.getElementById('planSelectionScreen').style.display = 'none';
     loginScreen.style.display = 'block';
     loginPass.value = '';
-  }
-
-  function confirmPaymentAndExtend() {
-    const currentExp = getActiveValidityExpiryTime() || Date.now();
-    const baseTime = Math.max(Date.now(), currentExp);
-    const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
-
-    localStorage.setItem('system_plan_expiry_time', newExpTime.toString());
-    localStorage.setItem('system_active_plan_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
-
-    document.getElementById('qrPaymentModal').classList.remove('active-modal');
-    document.getElementById('planSelectionScreen').style.display = 'none';
-    mainApp.style.display = 'block';
-
-    updateValidityDisplay();
-    initAllCanvases();
-    cleanupOldHistoryRecords();
-    alert(`🎉 पेमेंट सफल रहा!\nआपका प्लान एक्टिव हो गया है (${selectedPlanDays} Days Validity)।`);
   }
 
   // ==========================================================
@@ -2262,9 +2244,9 @@
     saveToHistory('4x6 Photo A4 Sheet', fileName, blob, 'application/pdf');
   });
 
-  // ==========================================================
+  // ==========================================
   // TAB 5: PDF ARRANGER ENGINE (DRAG & DROP / HOLD & MOVE)
-  // ==========================================================
+  // ==========================================
   let arrangedPdfPagesList = [];
   let draggedArrangerIdx = null;
 
