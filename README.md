@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -668,7 +669,7 @@
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <!-- TAB 1: 5 CARDS SYSTEM (WITH 100% FREE MANUAL CROPPING & EXACT 1013x638 FIT) -->
+    <!-- TAB 1: 5 CARDS SYSTEM (FULLY MANUAL 4-WAY & CORNER CROPPING) -->
     <div id="tab-cards" class="tab-content active">
       <div class="badge">Fully Manual Precision Cropper • Exact 1013×638 Fit • 2.5mm Gap • 5 Cards</div>
       <h1>Card Generator System</h1>
@@ -933,7 +934,7 @@
       <div class="upload-section" style="margin-bottom: 15px;">
         <label class="upload-box" for="universalMultiInput" style="max-width: 450px;">
           <strong style="display:block; font-size:14px; margin-bottom:4px; color:var(--accent-blue);">📁 Select Files (PDF, JPG, PNG Allowed)</strong>
-          <div id="universalMultiStatus" style="font-size: 12px; color: var(--text-muted);">क्लिक करके PDF या इमेज फ़ाइलें चुनें</div>
+          <div id="universalMultiStatus" style="font-size: 12px; color: var(--text-muted);">क्लिक करके PDF या इमेज फाइलें चुनें</div>
         </label>
         <input type="file" id="universalMultiInput" accept="image/jpeg,image/png,image/jpg,application/pdf" multiple>
       </div>
@@ -1199,7 +1200,7 @@
   }
 
   // ==========================================================
-  // MANUAL CROPPING TRIGGER FOR ID CARDS
+  // MANUAL CROPPING ENGINE FOR ID CARDS
   // ==========================================================
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
