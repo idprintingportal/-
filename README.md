@@ -1199,7 +1199,7 @@
   }
 
   // ==========================================================
-  // 100% FIXED SECURE FILE & CROPPING BRIDGE
+  // FIXED ROBUST FILE UPLOAD & MANUAL CROP BRIDGE
   // ==========================================================
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
@@ -1258,7 +1258,7 @@
   }
 
   // ==========================================================
-  // PERMANENT INDEXEDDB 60-DAY HISTORY STORAGE ENGINE
+  // INDEXEDDB 60-DAY HISTORY STORAGE & INDIVIDUAL DELETE ENGINE
   // ==========================================================
   const DB_NAME = 'PrintPortal60DayDB';
   const DB_STORE = 'print_records';
