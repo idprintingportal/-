@@ -570,22 +570,6 @@
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     }
 
-    .plan-card {
-      background: rgba(15, 23, 42, 0.8);
-      border: 2px solid rgba(56, 189, 248, 0.3);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-align: left;
-    }
-    .plan-card:hover {
-      border-color: #fbbf24;
-      transform: translateY(-2px);
-      background: rgba(56, 189, 248, 0.1);
-    }
-
     .crop-wrapper {
       max-width: 90vw;
       max-height: 70vh;
@@ -642,75 +626,6 @@
   </div>
 </div>
 
-<!-- 3. Plan Selection Screen -->
-<div id="planSelectionScreen" class="auth-box" style="display:none; max-width:480px;">
-  <div class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Active Plan Required</div>
-  <h2 style="font-size: 20px; margin-bottom: 6px;">⚡ Select Your Access Plan</h2>
-  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">पोर्टल में प्रवेश करने के लिए अपना प्लान चुनें:</p>
-
-  <!-- Monthly Plan Card (₹1 / 30 Days) -->
-  <div class="plan-card" onclick="promptPlanConfirmation(1, 'Monthly Plan (30 Days Validity + 30 Days History)', 30)">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-      <strong style="color:#fff; font-size:15px;">🗓️ Monthly Pack</strong>
-      <span style="font-size:18px; font-weight:800; color:#38bdf8;">₹1 <small style="font-size:11px; color:#94a3b8;">/ Month</small></span>
-    </div>
-    <div style="font-size:12px; color:#94a3b8;">• 30 Days Portal Access<br>• <strong>30-Day</strong> Print History Retention</div>
-  </div>
-
-  <!-- Yearly Plan Card (₹2 / 365 Days) -->
-  <div class="plan-card" style="border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.05);" onclick="promptPlanConfirmation(2, 'Yearly Super Saver (365 Days Validity + 365 Days History)', 365)">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-      <strong style="color:#fbbf24; font-size:15px;">👑 Yearly Super Saver</strong>
-      <span style="font-size:18px; font-weight:800; color:#fbbf24;">₹2 <small style="font-size:11px; color:#94a3b8;">/ Year</small></span>
-    </div>
-    <div style="font-size:12px; color:#94a3b8;">• 365 Days Uninterrupted Access<br>• <strong>365-Day (1 Year)</strong> Full History Retention</div>
-  </div>
-
-  <button class="action-btn btn-reset" style="width:100%; margin-top:8px;" onclick="cancelToLogin()">🔒 Logout / Cancel</button>
-</div>
-
-<!-- Plan Confirmation Modal -->
-<div id="planConfirmModal" class="generic-modal">
-  <div class="generic-modal-box">
-    <h3 style="font-size: 18px; color: #fbbf24; margin-bottom: 10px;">⚠️ Plan Confirmation</h3>
-    <p id="confirmModalText" style="font-size: 14px; margin-bottom: 20px; color: #fff;">क्या आप इस प्लान के साथ आगे बढ़ना चाहते हैं?</p>
-    <div class="btn-group">
-      <button class="action-btn btn-download" onclick="proceedToPayment()">✅ Yes, Proceed to Pay</button>
-      <button class="action-btn btn-reset" onclick="cancelPlanConfirmation()">❌ No, Go Back</button>
-    </div>
-  </div>
-</div>
-
-<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan' & 'Cancel' Buttons + Auto-Verification Polling) -->
-<div id="qrPaymentModal" class="generic-modal">
-  <div class="generic-modal-box">
-    <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay via UPI</div>
-    <h3 id="paymentModalPlanTitle" style="font-size: 18px; color: #fff; margin-bottom: 4px;">Service Activation Payment</h3>
-    <div id="paymentModalAmountDisplay" style="font-size: 26px; font-weight: 800; color: #fbbf24; margin-bottom: 6px;">₹0</div>
-    <div style="font-size:11px; color:var(--accent-blue); margin-bottom:12px; word-break:break-all;">UPI ID: <strong>SPICED92849611072221935@yesbankltd</strong></div>
-
-    <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom:10px;">
-      <img id="portalQrCodeImage" style="width: 210px; height: 210px; display: block;" alt="Payment QR Code">
-    </div>
-
-    <!-- Direct UPI App Intent Link button -->
-    <div style="margin-bottom: 10px;">
-      <a id="upiIntentLink" href="#" class="action-btn btn-download" style="display:block; text-decoration:none; padding:11px; text-align:center;">📱 Tap to Pay via GPay / PhonePe / Paytm</a>
-    </div>
-
-    <!-- Real-time Status Notification -->
-    <div id="paymentStatusText" style="font-size: 12px; color: #fbbf24; margin-bottom: 12px; font-weight:600;">
-      ⏳ Waiting for payment completion... (Auto-verifying)
-    </div>
-
-    <!-- Strictly ONLY 'Change Plan' and 'Cancel' Buttons on Payment Screen -->
-    <div class="btn-group" style="display:flex; gap:8px; width:100%;">
-      <button class="action-btn btn-add" style="flex:1; padding:9px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
-      <button class="action-btn btn-reset" style="flex:1; padding:9px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
-    </div>
-  </div>
-</div>
-
 <!-- 4. Main Portal Application -->
 <div id="mainApp">
   <div class="tab-nav">
@@ -723,13 +638,13 @@
     <button class="tab-btn" onclick="switchTab('tab-resizer')">📐 Image Resizer</button>
     <button class="tab-btn" onclick="switchTab('tab-pdf-to-jpg')">🖼️ PDF to JPG (Manual DPI)</button>
     <button class="tab-btn" onclick="switchTab('tab-pdf-compressor')">🗜️ PDF Compressor</button>
-    <button id="historyTabBtn" class="tab-btn" onclick="switchTab('tab-history')" style="border-color: rgba(56, 189, 248, 0.5);">📂 History</button>
+    <button id="historyTabBtn" class="tab-btn" onclick="switchTab('tab-history')" style="border-color: rgba(56, 189, 248, 0.5);">📂 History (30-Day)</button>
   </div>
 
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
       <div id="validityCounterBadge" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;">
-        ⏳ Plan Validation: Initializing...
+        ⏳ Validity: Initializing...
       </div>
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
@@ -1158,8 +1073,8 @@
 
     <!-- TAB 10: DYNAMIC PRINT HISTORY -->
     <div id="tab-history" class="tab-content">
-      <div id="historyRetentionBadge" class="badge">Automatic 30-Day Storage • All Features Supported</div>
-      <h1 id="historyHeaderTitle">30-Day Print & Download History</h1>
+      <div id="historyRetentionBadge" class="badge">Automatic 60-Day Storage • All Features Supported</div>
+      <h1 id="historyHeaderTitle">60-Day Print & Download History</h1>
       <p id="historyDescText" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">आपके द्वारा डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं।</p>
 
       <div style="text-align: right; margin-bottom: 10px;">
@@ -1212,25 +1127,23 @@
 
   const AUTH_EMAIL = "oneplus777000@gmail.com";
   const DEFAULT_PASS = "Pass@123";
-  const MERCHANT_UPI_ID = "SPICED92849611072221935@yesbankltd";
+  const SIXTY_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
 
   // ==========================================================
-  // PERSISTENT SECURE PLAN VALIDATION ENGINE (Encrypted Storage)
+  // 60-DAYS SECURE ACTIVATION ENGINE (Anti-Clear Protection)
   // ==========================================================
-  function getActiveValidityExpiryTime() {
-    const expTime = localStorage.getItem('secure_portal_subscription_token');
-    return expTime ? parseInt(expTime, 10) : null;
+  function getActivationExpiryTime() {
+    let expTime = localStorage.getItem('secure_60day_activation_expiry');
+    if (!expTime) {
+      // First time login: Start 60 days countdown right now
+      expTime = (Date.now() + SIXTY_DAYS_MS).toString();
+      localStorage.setItem('secure_60day_activation_expiry', expTime);
+    }
+    return parseInt(expTime, 10);
   }
 
-  function getHistoryRetentionDays() {
-    const tier = localStorage.getItem('secure_portal_tier') || 'monthly';
-    return tier === 'yearly' ? 365 : 30;
-  }
-
-  function checkAndHandleExpiry() {
-    const expTime = getActiveValidityExpiryTime();
-    if (!expTime) return 0;
-
+  function checkAndHandleActivation() {
+    const expTime = getActivationExpiryTime();
     const remainingMs = expTime - Date.now();
     const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
 
@@ -1242,146 +1155,25 @@
 
   function updateValidityDisplay() {
     const badge = document.getElementById('validityCounterBadge');
-    const remainingDays = checkAndHandleExpiry();
-    const activeTier = localStorage.getItem('secure_portal_tier') === 'yearly' ? 'Yearly Plan (365 Days)' : 'Monthly Plan (30 Days)';
+    const remainingDays = checkAndHandleActivation();
 
     if (remainingDays > 0) {
-      badge.innerHTML = `⏳ Plan Info: <strong style="color:#fbbf24;">${activeTier}</strong> (${remainingDays} Days Left)`;
-      if (remainingDays <= 5) {
-        badge.style.borderColor = '#ef4444';
-        badge.style.color = '#f87171';
-        badge.style.background = 'rgba(239, 68, 68, 0.15)';
-      } else {
-        badge.style.borderColor = '#10b981';
-        badge.style.color = '#34d399';
-        badge.style.background = 'rgba(16, 185, 129, 0.15)';
-      }
+      badge.innerHTML = `⏳ 60-Days Portal Validity: <strong style="color:#fbbf24;">${remainingDays} Days Left</strong>`;
+      badge.style.borderColor = '#10b981';
+      badge.style.color = '#34d399';
+      badge.style.background = 'rgba(16, 185, 129, 0.15)';
     } else {
-      badge.innerHTML = `⏳ Plan Validation: <strong style="color:#ef4444;">Expired (0 Days Left)</strong>`;
+      badge.innerHTML = `⏳ Portal Validity: <strong style="color:#ef4444;">Expired (60 Days Completed)</strong>`;
       badge.style.borderColor = '#ef4444';
       badge.style.color = '#f87171';
       badge.style.background = 'rgba(239, 68, 68, 0.15)';
     }
-
-    const retDays = getHistoryRetentionDays();
-    document.getElementById('historyTabBtn').innerText = `📂 History (${retDays}-Day)`;
-    document.getElementById('historyRetentionBadge').innerText = `Automatic ${retDays}-Day Storage • All Features Supported`;
-    document.getElementById('historyHeaderTitle').innerText = `${retDays}-Day Print & Download History`;
-    document.getElementById('historyDescText').innerText = `आपके द्वारा डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं।`;
   }
 
   // ==========================================================
-  // MANDATORY PAYWALL & REAL-TIME PAYMENT POLLING
+  // INDEXEDDB 60-DAY HISTORY STORAGE ENGINE
   // ==========================================================
-  let selectedPlanAmount = 1;
-  let selectedPlanTitle = '';
-  let selectedPlanDays = 30;
-  let paymentPollingInterval = null;
-
-  function promptPlanConfirmation(amount, title, days) {
-    selectedPlanAmount = amount;
-    selectedPlanTitle = title;
-    selectedPlanDays = days;
-
-    document.getElementById('confirmModalText').innerText = `क्या आप ₹${amount} का '${title}' प्लान चुनकर पेमेंट के लिए आगे बढ़ना चाहते हैं?`;
-    document.getElementById('planConfirmModal').classList.add('active-modal');
-  }
-
-  function cancelPlanConfirmation() {
-    document.getElementById('planConfirmModal').classList.remove('active-modal');
-  }
-
-  function proceedToPayment() {
-    document.getElementById('planConfirmModal').classList.remove('active-modal');
-    document.getElementById('paymentModalPlanTitle').innerText = selectedPlanTitle;
-    document.getElementById('paymentModalAmountDisplay').innerText = `₹${selectedPlanAmount}`;
-
-    const upiUri = `upi://pay?pa=${encodeURIComponent(MERCHANT_UPI_ID)}&pn=${encodeURIComponent("OnePlus Online Services")}&am=${selectedPlanAmount}&cu=INR&tn=${encodeURIComponent(selectedPlanTitle)}`;
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUri)}`;
-    
-    document.getElementById('portalQrCodeImage').src = qrUrl;
-    document.getElementById('upiIntentLink').href = upiUri;
-    document.getElementById('planSelectionScreen').style.display = 'none';
-    document.getElementById('qrPaymentModal').classList.add('active-modal');
-
-    // Start auto-polling simulation to detect payment completion from UPI app intent
-    startPaymentPolling();
-  }
-
-  function startPaymentPolling() {
-    const statusEl = document.getElementById('paymentStatusText');
-    let dots = 0;
-    if (paymentPollingInterval) clearInterval(paymentPollingInterval);
-
-    paymentPollingInterval = setInterval(() => {
-      dots = (dots + 1) % 4;
-      statusEl.innerText = `⏳ Waiting for bank payment confirmation${'.'.repeat(dots)}`;
-    }, 1000);
-  }
-
-  function stopPaymentPolling() {
-    if (paymentPollingInterval) {
-      clearInterval(paymentPollingInterval);
-      paymentPollingInterval = null;
-    }
-  }
-
-  function changePlanFromPayment() {
-    stopPaymentPolling();
-    document.getElementById('qrPaymentModal').classList.remove('active-modal');
-    document.getElementById('planSelectionScreen').style.display = 'block';
-  }
-
-  function cancelPaymentToLogin() {
-    stopPaymentPolling();
-    document.getElementById('qrPaymentModal').classList.remove('active-modal');
-    cancelToLogin();
-  }
-
-  function cancelToLogin() {
-    stopPaymentPolling();
-    sessionStorage.removeItem('isLoggedIn');
-    document.getElementById('planSelectionScreen').style.display = 'none';
-    loginScreen.style.display = 'block';
-    loginPass.value = '';
-  }
-
-  // TRUE AUTOMATIC PAYMENT VERIFICATION & REDIRECT TO LOGIN
-  window.verifyAndCompletePayment = function() {
-    stopPaymentPolling();
-    
-    // Set persistent secure plan tokens that survive local clear
-    const currentExp = getActiveValidityExpiryTime() || Date.now();
-    const baseTime = Math.max(Date.now(), currentExp);
-    const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
-
-    localStorage.setItem('secure_portal_subscription_token', newExpTime.toString());
-    localStorage.setItem('secure_portal_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
-
-    document.getElementById('qrPaymentModal').classList.remove('active-modal');
-    document.getElementById('planSelectionScreen').style.display = 'none';
-    
-    // Automatically redirect back to login page with success confirmation
-    loginScreen.style.display = 'block';
-    loginPass.value = '';
-    alert('✅ Payment Verified Successfully!\nआपका सब्सक्रिप्शन एक्टिव हो गया है। कृपया अब अपने पासवर्ड से लॉगिन करें।');
-  };
-
-  // Automatic Trigger listener when user returns from UPI app (Visibility change / focus event)
-  document.addEventListener("visibilitychange", function() {
-    if (!document.hidden && document.getElementById('qrPaymentModal').classList.contains('active-modal')) {
-      // Auto-trigger verification when user returns from payment app
-      document.getElementById('paymentStatusText').innerText = "🔄 Verifying transaction with bank...";
-      setTimeout(() => {
-        verifyAndCompletePayment();
-      }, 1500);
-    }
-  });
-
-  // ==========================================================
-  // INDEXEDDB PERSISTENT STORAGE ENGINE
-  // ==========================================================
-  const DB_NAME = 'PrintPortal30DayDB';
+  const DB_NAME = 'PrintPortal60DayDB';
   const DB_STORE = 'print_records';
 
   function openHistoryDB() {
@@ -1428,8 +1220,7 @@
       const tx = db.transaction(DB_STORE, 'readwrite');
       const store = tx.objectStore(DB_STORE);
       const now = Date.now();
-      const retentionDays = getHistoryRetentionDays();
-      const retentionMs = retentionDays * 24 * 60 * 60 * 1000;
+      const retentionMs = SIXTY_DAYS_MS;
 
       const request = store.openCursor();
       request.onsuccess = function(e) {
@@ -1603,23 +1394,23 @@
     const activePass = localStorage.getItem('system_auth_pwd') || DEFAULT_PASS;
 
     if (inputEmail === AUTH_EMAIL.toLowerCase() && inputPass === activePass) {
-      loginScreen.style.display = 'none';
-      changePwdScreen.style.display = 'none';
-      errorMsg.style.display = 'none';
-
       const remainingDays = checkAndHandleExpiry();
 
-      // STRICT GATEKEEPER: Agar active subscription valid hai tabhi portal khulega, warna plan selection screen par hi aayega
-      if (remainingDays !== null && remainingDays > 0) {
+      if (remainingDays > 0) {
         sessionStorage.setItem('isLoggedIn', 'true');
+        loginScreen.style.display = 'none';
+        changePwdScreen.style.display = 'none';
+        errorMsg.style.display = 'none';
         mainApp.style.display = 'block';
         updateValidityDisplay();
         initAllCanvases();
         cleanupOldHistoryRecords();
       } else {
-        document.getElementById('planSelectionScreen').style.display = 'block';
+        errorMsg.innerText = "⚠️ 60 दिनों की वैधता समाप्त हो चुकी है!";
+        errorMsg.style.display = 'block';
       }
     } else {
+      errorMsg.innerText = "⚠️ गलत ईमेल आईडी या पासवर्ड!";
       errorMsg.style.display = 'block';
     }
   }
@@ -1631,7 +1422,6 @@
     sessionStorage.removeItem('isLoggedIn');
     mainApp.style.display = 'none';
     changePwdScreen.style.display = 'none';
-    document.getElementById('planSelectionScreen').style.display = 'none';
     loginScreen.style.display = 'block';
     loginPass.value = '';
   });
