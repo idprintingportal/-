@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -1199,8 +1200,16 @@
   }
 
   // ==========================================================
-  // FIXED ROBUST FILE UPLOAD & MANUAL CROP BRIDGE
+  // RESTORED 100% WORKING FILE & CROP LISTENERS
   // ==========================================================
+  document.getElementById('card1Input').addEventListener('change', (e) => {
+    handleCardUpload(e.target.files[0], canvas1, ctx1, true);
+  });
+
+  document.getElementById('card2Input').addEventListener('change', (e) => {
+    handleCardUpload(e.target.files[0], canvas2, ctx2, false);
+  });
+
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
 
@@ -1258,7 +1267,7 @@
   }
 
   // ==========================================================
-  // INDEXEDDB 60-DAY HISTORY STORAGE & INDIVIDUAL DELETE ENGINE
+  // PERMANENT INDEXEDDB 60-DAY HISTORY STORAGE ENGINE
   // ==========================================================
   const DB_NAME = 'PrintPortal60DayDB';
   const DB_STORE = 'print_records';
