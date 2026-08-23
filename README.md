@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ALL PRINTING SERVICES WORKING FINE</title>
+  <title>ID CARD PRINT & CONVERTER PORTAL</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -25,15 +25,15 @@
 
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #090d16 0%, #111827 50%, #090d16 100%);
-      --card-bg: rgba(17, 24, 39, 0.9);
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      --card-bg: rgba(30, 41, 59, 0.85);
       --accent-blue: #38bdf8;
-      --accent-purple: #a855f7;
+      --accent-purple: #818cf8;
       --btn-add: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       --btn-download: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --border-color: rgba(56, 189, 248, 0.15);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
@@ -41,7 +41,7 @@
     body { 
       background: var(--bg-gradient); 
       min-height: 100vh;
-      padding: 20px 10px; 
+      padding: 15px 10px; 
       display: flex; 
       flex-direction: column; 
       align-items: center; 
@@ -50,24 +50,24 @@
     }
 
     .portal-main-heading {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%);
+      background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f43f5e 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       text-align: center;
     }
 
     .auth-box {
       background: var(--card-bg);
-      backdrop-filter: blur(25px);
+      backdrop-filter: blur(20px);
       border: 1px solid var(--border-color);
-      padding: 40px 30px;
-      border-radius: 24px;
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
+      padding: 35px 30px;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
       width: 100%;
       max-width: 420px;
       text-align: center;
@@ -75,23 +75,23 @@
 
     .badge {
       display: inline-block;
-      padding: 5px 16px;
+      padding: 4px 14px;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 1px;
       text-transform: uppercase;
-      background: rgba(56, 189, 248, 0.1);
+      background: rgba(56, 189, 248, 0.15);
       color: var(--accent-blue);
       border: 1px solid rgba(56, 189, 248, 0.3);
       border-radius: 20px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .slot-counter-badge {
-      background: rgba(245, 158, 11, 0.12);
+      background: rgba(245, 158, 11, 0.15);
       color: #fbbf24;
       border: 1px solid rgba(245, 158, 11, 0.3);
-      padding: 6px 16px;
+      padding: 4px 16px;
       font-size: 12px;
       font-weight: 600;
       border-radius: 20px;
@@ -101,38 +101,32 @@
 
     .login-input {
       width: 100%;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-      background: rgba(3, 7, 18, 0.8);
+      padding: 13px 16px;
+      margin-bottom: 15px;
+      background: rgba(15, 23, 42, 0.9);
       border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 12px;
+      border-radius: 10px;
       color: #fff;
       font-size: 14px;
       outline: none;
-      transition: 0.2s;
-    }
-    .login-input:focus {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
     }
 
     .login-btn {
       width: 100%;
-      padding: 14px;
+      padding: 13px;
       background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
       color: #fff;
       font-weight: 600;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 15px;
       transition: 0.3s;
     }
-    .login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
     .auth-link {
       display: inline-block;
-      margin-top: 16px;
+      margin-top: 15px;
       font-size: 13px;
       color: var(--accent-blue);
       cursor: pointer;
@@ -140,7 +134,7 @@
     }
 
     .error-msg {
-      color: #f87171;
+      color: #ef4444;
       font-size: 13px;
       margin-top: 12px;
       display: none;
@@ -150,14 +144,14 @@
       display: flex;
       justify-content: center;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
       flex-wrap: wrap;
     }
 
     .tab-btn {
-      padding: 10px 14px;
+      padding: 9px 13px;
       background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
       color: var(--text-muted);
       border-radius: 12px;
       cursor: pointer;
@@ -165,7 +159,6 @@
       font-size: 12px;
       transition: 0.3s;
     }
-    .tab-btn:hover { color: #fff; border-color: rgba(56, 189, 248, 0.4); }
 
     .tab-btn.active {
       background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
@@ -182,28 +175,27 @@
 
     .container { 
       background: var(--card-bg); 
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(16px);
       border: 1px solid var(--border-color);
-      padding: 30px 24px; 
-      border-radius: 24px; 
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); 
+      padding: 25px 20px; 
+      border-radius: 20px; 
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4); 
       width: 100%; 
       text-align: center; 
       position: relative; 
     }
 
     .logout-btn {
-      background: rgba(239, 68, 68, 0.15);
+      background: rgba(239, 68, 68, 0.2);
       border: 1px solid rgba(239, 68, 68, 0.4);
       color: #fca5a5;
-      padding: 8px 16px;
+      padding: 6px 14px;
       font-size: 12px;
-      font-weight: 600;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       transition: 0.2s;
     }
-    .logout-btn:hover { background: rgba(239, 68, 68, 0.3); }
+    .logout-btn:hover { background: rgba(239, 68, 68, 0.4); }
 
     h1 { 
       background: linear-gradient(to right, #38bdf8, #a855f7, #ec4899);
@@ -211,7 +203,7 @@
       -webkit-text-fill-color: transparent;
       font-size: 22px; 
       font-weight: 700;
-      margin-bottom: 8px; 
+      margin-bottom: 6px; 
     }
 
     .tab-content { display: none; }
@@ -221,23 +213,24 @@
       display: flex; 
       gap: 15px; 
       justify-content: center; 
-      margin: 18px 0; 
+      margin: 15px 0; 
       flex-wrap: wrap; 
     }
 
     .upload-box { 
-      border: 2px dashed rgba(56, 189, 248, 0.3); 
-      padding: 18px 16px; 
-      border-radius: 16px; 
+      border: 2px dashed rgba(56, 189, 248, 0.4); 
+      padding: 16px 14px; 
+      border-radius: 14px; 
       cursor: pointer; 
-      background: rgba(3, 7, 18, 0.6); 
+      background: rgba(15, 23, 42, 0.6); 
       flex: 1; 
       min-width: 220px; 
       transition: 0.3s; 
     }
+
     .upload-box:hover { 
       border-color: var(--accent-blue);
-      background: rgba(56, 189, 248, 0.06);
+      background: rgba(56, 189, 248, 0.08);
     }
 
     input[type="file"] { display: none; }
@@ -246,21 +239,21 @@
       display: flex; 
       justify-content: center; 
       gap: 20px; 
-      margin: 18px 0; 
+      margin: 15px 0; 
       flex-wrap: wrap; 
     }
 
     .preview-box { 
       border: 1px solid var(--border-color); 
-      padding: 12px; 
-      background: rgba(3, 7, 18, 0.7); 
-      border-radius: 14px; 
+      padding: 10px; 
+      background: rgba(15, 23, 42, 0.8); 
+      border-radius: 12px; 
     }
 
     .preview-box h4 { 
       font-size: 12px; 
       color: var(--text-muted); 
-      margin-bottom: 8px; 
+      margin-bottom: 6px; 
     }
     
     canvas { 
@@ -268,7 +261,7 @@
       height: auto; 
       display: block; 
       margin: 0 auto; 
-      border-radius: 6px;
+      border-radius: 4px;
       background: #fff; 
     }
 
@@ -276,12 +269,12 @@
       display: flex; 
       gap: 10px; 
       justify-content: center; 
-      margin-top: 18px; 
+      margin-top: 15px; 
       flex-wrap: wrap; 
     }
 
     .action-btn { 
-      padding: 11px 22px; 
+      padding: 10px 22px; 
       font-size: 13px; 
       font-weight: 600; 
       border: none; 
@@ -290,9 +283,10 @@
       transition: all 0.3s ease; 
       color: #fff;
     }
+
     .action-btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
 
     .btn-add { background: var(--btn-add); }
@@ -303,30 +297,32 @@
       background: rgba(56, 189, 248, 0.15);
       border: 1px solid var(--accent-blue);
       color: var(--accent-blue);
-      padding: 5px 12px;
+      padding: 4px 10px;
       font-size: 11px;
-      border-radius: 8px;
+      border-radius: 6px;
       margin-top: 8px;
       cursor: pointer;
       font-weight: 600;
       transition: 0.2s;
     }
-    .btn-manual-crop:hover { background: var(--accent-blue); color: #0f172a; }
+    .btn-manual-crop:hover {
+      background: var(--accent-blue);
+      color: #0f172a;
+    }
 
     .action-btn:disabled { 
-      background: #1f2937; 
-      color: #4b5563; 
+      background: #334155; 
+      color: #64748b; 
       cursor: not-allowed; 
-      box-shadow: none;
     }
 
     .control-panel {
-      background: rgba(3, 7, 18, 0.6);
+      background: rgba(15, 23, 42, 0.7);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 16px 20px;
+      border-radius: 14px;
+      padding: 14px 18px;
       max-width: 600px;
-      margin: 18px auto;
+      margin: 15px auto;
       text-align: center;
     }
 
@@ -335,15 +331,15 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 8px;
       flex-wrap: wrap;
     }
 
     .qty-input {
       width: 80px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(3, 7, 18, 0.9);
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.9);
       border: 1px solid var(--accent-blue);
       color: #fff;
       font-size: 14px;
@@ -355,9 +351,9 @@
     .text-field-input {
       width: 100%;
       max-width: 260px;
-      padding: 9px 12px;
-      border-radius: 10px;
-      background: rgba(3, 7, 18, 0.9);
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.9);
       border: 1px solid var(--accent-blue);
       color: #fff;
       font-size: 13px;
@@ -366,27 +362,26 @@
     }
 
     .quick-qty-btn {
-      padding: 6px 12px;
-      background: #1f2937;
+      padding: 5px 12px;
+      background: #334155;
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #fff;
-      border-radius: 8px;
+      border-radius: 6px;
       font-size: 11px;
       cursor: pointer;
       font-weight: 600;
-      transition: 0.2s;
     }
-    .quick-qty-btn:hover { background: #374151; }
 
     .slider-range {
       -webkit-appearance: none;
       width: 100%;
       height: 6px;
       border-radius: 5px;
-      background: #1f2937;
+      background: #334155;
       outline: none;
-      margin: 8px 0 10px 0;
+      margin: 6px 0 8px 0;
     }
+
     .slider-range::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -401,10 +396,10 @@
     .size-badge-box {
       display: flex;
       justify-content: space-around;
-      background: rgba(3, 7, 18, 0.8);
+      background: rgba(15, 23, 42, 0.8);
       padding: 12px;
-      border-radius: 12px;
-      margin-top: 12px;
+      border-radius: 10px;
+      margin-top: 10px;
       border: 1px solid var(--border-color);
     }
 
@@ -413,30 +408,31 @@
       flex-wrap: wrap;
       gap: 14px;
       justify-content: center;
-      margin: 18px 0;
+      margin: 15px 0;
       max-height: 420px;
       overflow-y: auto;
-      padding: 16px;
-      background: rgba(3, 7, 18, 0.7);
-      border-radius: 14px;
+      padding: 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 12px;
       border: 1px solid var(--border-color);
     }
 
     .draggable-card {
       position: relative;
       width: 125px;
-      background: #030712;
-      border: 2px solid rgba(56, 189, 248, 0.3);
-      border-radius: 12px;
-      padding: 8px 6px 10px 6px;
+      background: #0f172a;
+      border: 2px solid rgba(56, 189, 248, 0.35);
+      border-radius: 10px;
+      padding: 6px 4px 8px 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.5);
       cursor: grab;
       user-select: none;
       transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
     }
+
     .draggable-card:active { cursor: grabbing; }
     .draggable-card.dragging { opacity: 0.4; transform: scale(0.92); border-color: #f59e0b; }
     .draggable-card.drag-over { border: 2px dashed #38bdf8; transform: scale(1.05); background: rgba(56, 189, 248, 0.12); }
@@ -446,18 +442,18 @@
       height: 135px;
       object-fit: contain;
       background: #ffffff;
-      border-radius: 6px;
+      border-radius: 5px;
       pointer-events: none;
     }
 
     .draggable-card .file-label {
       font-size: 11px;
-      color: #9ca3af;
+      color: #94a3b8;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       width: 100%;
-      margin: 6px 0 4px 0;
+      margin: 6px 0 2px 0;
       font-weight: 600;
       text-align: center;
       pointer-events: none;
@@ -472,10 +468,10 @@
     }
 
     .mini-tool-btn {
-      background: #1f2937;
-      color: #f3f4f6;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 6px;
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 4px;
       padding: 4px 8px;
       font-size: 11px;
       cursor: pointer;
@@ -490,7 +486,7 @@
       right: -6px;
       background: #ef4444;
       color: #ffffff;
-      border: 2px solid #030712;
+      border: 2px solid #1e293b;
       border-radius: 50%;
       width: 22px;
       height: 22px;
@@ -507,10 +503,10 @@
     .item-delete-btn:hover { background: #dc2626; transform: scale(1.15); }
 
     .history-table-container {
-      margin-top: 18px;
+      margin-top: 15px;
       overflow-x: auto;
-      background: rgba(3, 7, 18, 0.7);
-      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 12px;
       border: 1px solid var(--border-color);
     }
 
@@ -522,42 +518,39 @@
     }
 
     .history-table th, .history-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .history-table th {
-      background: rgba(17, 24, 39, 0.95);
+      background: rgba(30, 41, 59, 0.9);
       color: var(--accent-blue);
       font-weight: 600;
     }
 
-    .history-table tr:hover { background: rgba(56, 189, 248, 0.04); }
+    .history-table tr:hover { background: rgba(56, 189, 248, 0.05); }
 
     .history-download-btn {
       background: #0284c7;
       color: #fff;
       border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 5px 12px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 11px;
       font-weight: 600;
-      margin-right: 6px;
-      transition: 0.2s;
+      margin-right: 4px;
     }
-    .history-download-btn:hover { background: #0369a1; }
 
     .history-delete-btn {
       background: rgba(239, 68, 68, 0.2);
       color: #fca5a5;
       border: 1px solid rgba(239, 68, 68, 0.4);
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 5px 10px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 11px;
       font-weight: 600;
-      transition: 0.2s;
     }
     .history-delete-btn:hover { background: rgba(239, 68, 68, 0.4); }
 
@@ -608,7 +601,7 @@
 <body>
 
 <div class="portal-main-heading">
-  ALL PRINTING SERVICES WORKING FINE
+  ID CARD PRINT & CONVERTER PORTAL
 </div>
 
 <!-- 1. Login Screen -->
@@ -661,45 +654,45 @@
   </div>
 
   <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
       <div id="validityCounterBadge" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;">
         ⏳ Validity: Initializing...
       </div>
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <!-- TAB 1: 5 CARDS SYSTEM (WITH GLOBAL ID AUTO-DETECT & COMPRESS) -->
+    <!-- TAB 1: 5 CARDS SYSTEM -->
     <div id="tab-cards" class="tab-content active">
-      <div class="badge">Global ID Auto-Detect & Crop • Smart Compression • 2.5mm Gap • 5 Cards</div>
+      <div class="badge">Auto-Dimension Crop • 2.5mm Gap • Broad Black Border • 5 Cards</div>
       <h1>Card Generator System</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">दुनिया का कोई भी आईडी कार्ड (Aadhaar, PAN, Ayushman, Voter ID, Driver License आदि) PDF या Image रूप में अपलोड करें — पोर्टल स्वतः उसे डिटेक्ट, क्रॉप और कंप्रेस कर देगा।</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">इमेज सिलेक्ट करते ही वह <strong>ऑटोमैटिकली सही ID साइज में फिट</strong> हो जाएगी। जरूरत पड़ने पर मैनुअल क्रॉप भी कर सकते हैं।</p>
       
       <div id="slotCounter" class="slot-counter-badge">Cards on Page: 0 / 5 (Next Slot: #1)</div>
 
       <div class="upload-section">
         <label class="upload-box" for="card1Input">
-          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Front Side (Auto-Detect)</strong>
-          <div id="file1Name" style="font-size: 12px; color: var(--text-muted);">इमेज या PDF चुनें</div>
+          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Front Side</strong>
+          <div id="file1Name" style="font-size: 12px; color: var(--text-muted);">इमेज चुनें (Auto-Crop)</div>
         </label>
-        <input type="file" id="card1Input" accept="image/*,application/pdf">
+        <input type="file" id="card1Input" accept="image/*">
 
         <label class="upload-box" for="card2Input">
-          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Back Side (Auto-Detect)</strong>
-          <div id="file2Name" style="font-size: 12px; color: var(--text-muted);">इमेज या PDF चुनें</div>
+          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Back Side</strong>
+          <div id="file2Name" style="font-size: 12px; color: var(--text-muted);">इमेज चुनें (Auto-Crop)</div>
         </label>
-        <input type="file" id="card2Input" accept="image/*,application/pdf">
+        <input type="file" id="card2Input" accept="image/*">
       </div>
 
       <div class="preview-container">
         <div class="preview-box">
           <h4>Front Card Preview</h4>
           <canvas id="canvas1" width="1013" height="638" style="width: 180px;"></canvas>
-          <button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Fine Crop Front</button>
+          <button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Manual Crop Front</button>
         </div>
         <div class="preview-box">
           <h4>Back Card Preview</h4>
           <canvas id="canvas2" width="1013" height="638" style="width: 180px;"></canvas>
-          <button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Fine Crop Back</button>
+          <button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Manual Crop Back</button>
         </div>
       </div>
 
@@ -785,7 +778,7 @@
 
       <div class="control-panel" style="text-align:left;">
         <div style="display:flex; flex-direction:column; gap:10px;">
-          <div style="background:rgba(3,7,18,0.6); padding:10px 12px; border-radius:10px; border:1px solid var(--border-color);">
+          <div style="background:rgba(15,23,42,0.6); padding:8px 12px; border-radius:8px; border:1px solid var(--border-color);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <label style="font-size:11px; color:var(--text-muted);">👤 Candidate Name:</label>
               <span id="nameFontLabel" style="font-size:11px; color:var(--accent-blue); font-weight:600;">Size: 24px</span>
@@ -794,7 +787,7 @@
             <input type="range" id="nameFontSlider" class="slider-range" min="14" max="36" value="24" oninput="updateNameFontSize(this.value)">
           </div>
 
-          <div style="background:rgba(3,7,18,0.6); padding:10px 12px; border-radius:10px; border:1px solid var(--border-color);">
+          <div style="background:rgba(15,23,42,0.6); padding:8px 12px; border-radius:8px; border:1px solid var(--border-color);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <label style="font-size:11px; color:var(--text-muted);">🎂 Date of Birth (DOB):</label>
               <span id="dobFontLabel" style="font-size:11px; color:var(--accent-blue); font-weight:600;">Size: 20px</span>
@@ -803,7 +796,7 @@
             <input type="range" id="dobFontSlider" class="slider-range" min="12" max="30" value="20" oninput="updateDobFontSize(this.value)">
           </div>
 
-          <div style="background:rgba(3,7,18,0.6); padding:10px 12px; border-radius:10px; border:1px solid var(--border-color);">
+          <div style="background:rgba(15,23,42,0.6); padding:8px 12px; border-radius:8px; border:1px solid var(--border-color);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <label style="font-size:11px; color:var(--text-muted);">📅 Photo Date (DOP):</label>
               <span id="dopFontLabel" style="font-size:11px; color:var(--accent-blue); font-weight:600;">Size: 20px</span>
@@ -1009,11 +1002,11 @@
       </div>
     </div>
 
-    <!-- TAB 8: PDF TO HIGH-DPI JPG CONVERTER (WITH PASSWORD UNLOCK FEATURE) -->
+    <!-- TAB 8: PDF TO HIGH-DPI JPG CONVERTER -->
     <div id="tab-pdf-to-jpg" class="tab-content">
-      <div class="badge">Password Unlock • Ultra High-Res • Manual & Quick DPI • Batch ZIP Export</div>
+      <div class="badge">Ultra High-Res • Manual & Quick DPI (72 to 1200 DPI) • Batch ZIP Export</div>
       <h1>PDF to High-DPI JPG Converter</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">PDF फ़ाइल अपलोड करें। यदि PDF पासवर्ड प्रोटेक्टेड है, तो पासवर्ड दर्ज करके अनलॉक करें।</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">PDF फ़ाइल अपलोड करें और अपनी आवश्यकतानुसार DPI रिज़ॉल्यूशन टाइप या सेलेक्ट करें।</p>
 
       <div class="upload-section" style="margin-bottom: 15px;">
         <label class="upload-box" for="pdfToJpgInput" style="max-width: 420px;">
@@ -1021,16 +1014,6 @@
           <div id="pdfToJpgStatus" style="font-size: 12px; color: var(--text-muted);">क्लिक करके .pdf फाइल चुनें</div>
         </label>
         <input type="file" id="pdfToJpgInput" accept="application/pdf">
-      </div>
-
-      <!-- Password Input Box for Protected PDFs -->
-      <div id="pdfPasswordBox" style="display:none; max-width: 400px; margin: 15px auto; background: rgba(3, 7, 18, 0.8); padding: 15px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.4);">
-        <div style="font-size: 12px; color: #f87171; font-weight: 600; margin-bottom: 6px;">🔒 Protected PDF Detected! Enter Password:</div>
-        <div style="display:flex; gap:8px;">
-          <input type="password" id="pdfPasswordInput" class="text-field-input" style="max-width:100%; margin:0;" placeholder="PDF Password">
-          <button class="action-btn btn-add" style="padding: 8px 14px; font-size:12px;" onclick="unlockAndLoadProtectedPdf()">🔓 Unlock</button>
-        </div>
-        <div id="pdfPasswordError" style="font-size: 11px; color: #ef4444; margin-top: 6px; display:none;">⚠️ गलत पासवर्ड! कृपया पुनः प्रयास करें।</div>
       </div>
 
       <div id="pdfToJpgControls" style="display:none;">
@@ -1106,8 +1089,8 @@
       <h1 id="historyHeaderTitle">60-Day Print & Download History</h1>
       <p id="historyDescText" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">आपके द्वारा डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं।</p>
 
-      <div style="text-align: right; margin-bottom: 12px;">
-        <button onclick="clearAllHistoryDB()" class="action-btn btn-reset" style="padding: 7px 14px; font-size: 11px;">🗑️ Clear Entire History Now</button>
+      <div style="text-align: right; margin-bottom: 10px; display:flex; justify-content:flex-end; gap:10px;">
+        <button onclick="clearAllHistoryDB()" class="action-btn btn-reset" style="padding: 6px 14px; font-size: 11px;">🗑️ Clear Entire History Now</button>
       </div>
 
       <div class="history-table-container">
@@ -1129,7 +1112,7 @@
       </div>
     </div>
 
-    <footer style="margin-top: 30px; font-size: 12px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;">
+    <footer style="margin-top: 25px; font-size: 12px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;">
       DESIGNED AND DEVELOPED BY - EASYWAYTECH - @2026 ALL RIGHTS RESERVED
     </footer>
   </div>
@@ -1196,92 +1179,6 @@
       badge.style.color = '#f87171';
       badge.style.background = 'rgba(239, 68, 68, 0.15)';
     }
-  }
-
-  // ==========================================================
-  // SMART GLOBAL ID AUTO-DETECT & AUTO-CROP ENGINE
-  // ==========================================================
-  async function handleCardUpload(file, targetCanvas, ctx, isFront) {
-    if (!file) return;
-
-    if (file.type === 'application/pdf') {
-      const arrayBuffer = await file.arrayBuffer();
-      try {
-        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-        const page = await pdf.getPage(1);
-        renderPageToCardCanvas(page, targetCanvas, ctx, isFront, file.name);
-      } catch(err) {
-        if (err.name === 'PasswordException') {
-          let pwd = prompt("यह PDF पासवर्ड प्रोटेक्टेड है। कृपया पासवर्ड दर्ज करें:");
-          if (pwd) {
-            try {
-              const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer), password: pwd }).promise;
-              const page = await pdf.getPage(1);
-              renderPageToCardCanvas(page, targetCanvas, ctx, isFront, file.name);
-              return;
-            } catch(e) {
-              alert("❌ गलत पासवर्ड!");
-            }
-          }
-        }
-      }
-    } else {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        processImageForCard(e.target.result, targetCanvas, ctx, isFront, file.name);
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  async function renderPageToCardCanvas(page, targetCanvas, ctx, isFront, fileName) {
-    const viewport = page.getViewport({ scale: 2.5 });
-    const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
-    tempCanvas.width = viewport.width;
-    tempCanvas.height = viewport.height;
-
-    await page.render({ canvasContext: tempCtx, viewport: viewport }).promise;
-    processImageForCard(tempCanvas.toDataURL('image/jpeg', 0.95), targetCanvas, ctx, isFront, fileName);
-  }
-
-  function processImageForCard(dataUrl, targetCanvas, ctx, isFront, fileName) {
-    const img = new Image();
-    img.onload = function() {
-      ctx.clearRect(0, 0, CARD_W, CARD_H);
-
-      // Global ID Auto-Detection & Contour Proportioning
-      const srcRatio = img.width / img.height;
-      const targetRatio = CARD_W / CARD_H;
-      let sX = 0, sY = 0, sW = img.width, sH = img.height;
-
-      if (srcRatio > targetRatio) {
-        sW = img.height * targetRatio;
-        sX = (img.width - sW) / 2;
-      } else {
-        sH = img.width / targetRatio;
-        sY = (img.height - sH) / 2;
-      }
-
-      ctx.drawImage(img, sX, sY, sW, sH, 0, 0, CARD_W, CARD_H);
-
-      if (isFront) {
-        img1Loaded = true;
-        frontCardRawData = dataUrl;
-        document.getElementById('file1Name').innerText = `✅ Auto-Captured: ${fileName}`;
-        document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
-      } else {
-        img2Loaded = true;
-        backCardRawData = dataUrl;
-        document.getElementById('file2Name').innerText = `✅ Auto-Captured: ${fileName}`;
-        document.getElementById('manualCropBackBtn').style.display = 'inline-block';
-      }
-
-      if (img1Loaded && img2Loaded) {
-        addCardBtn.disabled = false;
-      }
-    };
-    img.src = dataUrl;
   }
 
   // ==========================================================
@@ -1372,7 +1269,7 @@
           tr.innerHTML = `
             <td><strong style="color:var(--accent-blue);">${rec.feature}</strong></td>
             <td>${rec.fileName}</td>
-            <td style="color:#9ca3af; font-size:11px;">${rec.dateFormatted}</td>
+            <td style="color:#94a3b8; font-size:11px;">${rec.dateFormatted}</td>
             <td>
               <button class="history-download-btn" onclick="reDownloadHistoryFile(${rec.id})">📥 Download</button>
               <button class="history-delete-btn" onclick="deleteHistoryItem(${rec.id})">🗑️ Delete</button>
@@ -1600,6 +1497,42 @@
     }
   }
 
+  function autoFitCardToCanvas(dataUrl, targetCanvas, ctx, isFront) {
+    const img = new Image();
+    img.onload = function() {
+      ctx.clearRect(0, 0, CARD_W, CARD_H);
+
+      const srcRatio = img.width / img.height;
+      const targetRatio = CARD_W / CARD_H;
+      let sX = 0, sY = 0, sW = img.width, sH = img.height;
+
+      if (srcRatio > targetRatio) {
+        sW = img.height * targetRatio;
+        sX = (img.width - sW) / 2;
+      } else {
+        sH = img.width / targetRatio;
+        sY = (img.height - sH) / 2;
+      }
+
+      ctx.drawImage(img, sX, sY, sW, sH, 0, 0, CARD_W, CARD_H);
+
+      if (isFront) {
+        img1Loaded = true;
+        frontCardRawData = dataUrl;
+        document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
+      } else {
+        img2Loaded = true;
+        backCardRawData = dataUrl;
+        document.getElementById('manualCropBackBtn').style.display = 'inline-block';
+      }
+
+      if (img1Loaded && img2Loaded) {
+        addCardBtn.disabled = false;
+      }
+    };
+    img.src = dataUrl;
+  }
+
   function openManualCropForCard(side) {
     if (side === 'front' && frontCardRawData) {
       openCropEngine(frontCardRawData, 'card_front');
@@ -1680,11 +1613,27 @@
   const slotCounter = document.getElementById('slotCounter');
 
   document.getElementById('card1Input').addEventListener('change', (e) => {
-    handleCardUpload(e.target.files[0], canvas1, ctx1, true);
+    const file = e.target.files[0];
+    if (file) {
+      document.getElementById('file1Name').innerText = `✅ Auto-Fitted: ${file.name}`;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        autoFitCardToCanvas(evt.target.result, canvas1, ctx1, true);
+      };
+      reader.readAsDataURL(file);
+    }
   });
 
   document.getElementById('card2Input').addEventListener('change', (e) => {
-    handleCardUpload(e.target.files[0], canvas2, ctx2, false);
+    const file = e.target.files[0];
+    if (file) {
+      document.getElementById('file2Name').innerText = `✅ Auto-Fitted: ${file.name}`;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        autoFitCardToCanvas(evt.target.result, canvas2, ctx2, false);
+      };
+      reader.readAsDataURL(file);
+    }
   });
 
   addCardBtn.addEventListener('click', () => {
@@ -1723,8 +1672,8 @@
       ctx.textAlign = 'center';
       ctx.fillText(`${i === 0 ? 'Front' : 'Back'} Card Preview`, CARD_W / 2, CARD_H / 2);
     });
-    document.getElementById('file1Name').innerText = 'इमेज या PDF चुनें';
-    document.getElementById('file2Name').innerText = 'इमेज या PDF चुनें';
+    document.getElementById('file1Name').innerText = 'इमेज चुनें (Auto-Crop)';
+    document.getElementById('file2Name').innerText = 'इमेज चुनें (Auto-Crop)';
     document.getElementById('card1Input').value = '';
     document.getElementById('card2Input').value = '';
     document.getElementById('manualCropFrontBtn').style.display = 'none';
@@ -2643,11 +2592,10 @@
   });
 
   // ==========================================================
-  // TAB 8: PDF TO HIGH-DPI JPG (WITH PASSWORD UNLOCK FEATURE)
+  // TAB 8: PDF TO HIGH-DPI JPG (MANUAL & BUTTON DPI)
   // ==========================================================
   let pdfToJpgDoc = null;
   let activeDpiValue = 300;
-  let activeProtectedArrayBuffer = null;
 
   function setPdfDpi(dpi) {
     activeDpiValue = dpi;
@@ -2668,35 +2616,11 @@
     if (!file) return;
 
     document.getElementById('pdfToJpgStatus').innerText = `✅ ${file.name}`;
-    activeProtectedArrayBuffer = await file.arrayBuffer();
+    const arrayBuffer = await file.arrayBuffer();
 
-    try {
-      pdfToJpgDoc = await pdfjsLib.getDocument({ data: new Uint8Array(activeProtectedArrayBuffer) }).promise;
-      document.getElementById('pdfPasswordBox').style.display = 'none';
-      document.getElementById('pdfToJpgControls').style.display = 'block';
-    } catch(err) {
-      if (err.name === 'PasswordException') {
-        document.getElementById('pdfPasswordBox').style.display = 'block';
-        document.getElementById('pdfToJpgControls').style.display = 'none';
-        document.getElementById('pdfPasswordInput').value = '';
-        document.getElementById('pdfPasswordError').style.display = 'none';
-      }
-    }
+    pdfToJpgDoc = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+    document.getElementById('pdfToJpgControls').style.display = 'block';
   });
-
-  async function unlockAndLoadProtectedPdf() {
-    const pwd = document.getElementById('pdfPasswordInput').value.trim();
-    if (!pwd) return;
-
-    try {
-      pdfToJpgDoc = await pdfjsLib.getDocument({ data: new Uint8Array(activeProtectedArrayBuffer), password: pwd }).promise;
-      document.getElementById('pdfPasswordBox').style.display = 'none';
-      document.getElementById('pdfToJpgControls').style.display = 'block';
-      document.getElementById('pdfPasswordError').style.display = 'none';
-    } catch(e) {
-      document.getElementById('pdfPasswordError').style.display = 'block';
-    }
-  }
 
   document.getElementById('startPdfToJpgBtn').addEventListener('click', async () => {
     if (!pdfToJpgDoc) return;
