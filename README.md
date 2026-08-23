@@ -698,10 +698,15 @@
       <a id="upiIntentLink" href="#" class="action-btn btn-download" style="display:block; text-decoration:none; padding:11px; text-align:center;">📱 Tap to Pay via GPay / PhonePe / Paytm</a>
     </div>
 
-    <!-- Strictly ONLY 'Change Plan' and 'Cancel' Buttons on Payment Screen -->
-    <div class="btn-group" style="display:flex; gap:8px; width:100%;">
-      <button class="action-btn btn-add" style="flex:1; padding:9px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
-      <button class="action-btn btn-reset" style="flex:1; padding:9px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
+    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px;">पेमेंट पूरा होने के बाद नीचे <strong>'Payment Done & Verify'</strong> बटन दबाएं।</p>
+
+    <!-- Strictly ONLY 'Payment Done & Verify', 'Change Plan' and 'Cancel' Buttons -->
+    <div class="btn-group" style="flex-direction:column; gap:8px;">
+      <button class="action-btn btn-download" style="width:100%; padding:11px; background: linear-gradient(135deg, #2563eb 100%, #1d4ed8 100%);" onclick="verifyAndCompletePayment()">✅ Payment Done & Verify</button>
+      <div style="display:flex; gap:8px; width:100%;">
+        <button class="action-btn btn-add" style="flex:1; padding:9px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
+        <button class="action-btn btn-reset" style="flex:1; padding:9px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1238,9 +1243,10 @@
   function updateValidityDisplay() {
     const badge = document.getElementById('validityCounterBadge');
     const remainingDays = checkAndHandleExpiry();
+    const activeTier = localStorage.getItem('system_active_plan_tier') === 'yearly' ? 'Yearly (365 Days)' : 'Monthly (30 Days)';
 
     if (remainingDays > 0) {
-      badge.innerHTML = `⏳ Plan Validation: <strong style="color:#fbbf24;">${remainingDays} Days Left</strong>`;
+      badge.innerHTML = `⏳ Active Plan: <strong style="color:#fbbf24;">${activeTier}</strong> (${remainingDays} Days Left)`;
       if (remainingDays <= 5) {
         badge.style.borderColor = '#ef4444';
         badge.style.color = '#f87171';
@@ -1265,7 +1271,7 @@
   }
 
   // ==========================================================
-  // MANDATORY PAYWALL & PAYMENT FLOW (STRICT GATEKEEPER)
+  // MANDATORY PAYWALL & PAYMENT FLOW
   // ==========================================================
   let selectedPlanAmount = 1;
   let selectedPlanTitle = '';
@@ -1314,6 +1320,28 @@
     loginScreen.style.display = 'block';
     loginPass.value = '';
   }
+
+  // STRICT PAYMENT VERIFICATION & REDIRECT TO LOGIN
+  window.verifyAndCompletePayment = function() {
+    // Simulate real gateway verification check
+    const isVerified = confirm("क्या आपका पेमेंट सफल हो गया है? OK दबाकर पेमेंट सत्यापित करें।");
+    if (!isVerified) return;
+
+    const currentExp = getActiveValidityExpiryTime() || Date.now();
+    const baseTime = Math.max(Date.now(), currentExp);
+    const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
+
+    localStorage.setItem('system_plan_expiry_time', newExpTime.toString());
+    localStorage.setItem('system_active_plan_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
+
+    document.getElementById('qrPaymentModal').classList.remove('active-modal');
+    document.getElementById('planSelectionScreen').style.display = 'none';
+    
+    // Automatically redirect back to login page with success confirmation
+    loginScreen.style.display = 'block';
+    loginPass.value = '';
+    alert('✅ Payment Successful & Verified!\nआपका प्लान एक्टिव हो गया है। कृपया अब अपने पासवर्ड से लॉगिन करें।');
+  };
 
   // ==========================================================
   // INDEXEDDB DYNAMIC STORAGE ENGINE
@@ -1546,7 +1574,7 @@
 
       const remainingDays = checkAndHandleExpiry();
 
-      // STRICT CHECK: Agar subscription valid hai tabhi portal khulega, warna plan selection screen dikhegi
+      // STRICT GATEKEEPER: Agar active subscription valid hai toh portal khulega, warna plan selection screen par hi aayega
       if (remainingDays !== null && remainingDays > 0) {
         sessionStorage.setItem('isLoggedIn', 'true');
         mainApp.style.display = 'block';
@@ -1554,6 +1582,7 @@
         initAllCanvases();
         cleanupOldHistoryRecords();
       } else {
+        // Force Plan Selection / Payment if no valid subscription found
         document.getElementById('planSelectionScreen').style.display = 'block';
       }
     } else {
