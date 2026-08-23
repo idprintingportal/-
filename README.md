@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -70,7 +69,7 @@
       border-radius: 20px;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       text-align: center;
     }
 
@@ -197,26 +196,6 @@
       transition: 0.2s;
     }
     .logout-btn:hover { background: rgba(239, 68, 68, 0.4); }
-
-    .btn-extend-service {
-      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-      color: #fff;
-      border: none;
-      padding: 7px 16px;
-      font-size: 12px;
-      font-weight: 700;
-      border-radius: 20px;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-extend-service:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 25px rgba(245, 158, 11, 0.7);
-    }
 
     h1 { 
       background: linear-gradient(to right, #38bdf8, #a855f7, #ec4899);
@@ -562,7 +541,7 @@
       font-weight: 600;
     }
 
-    /* Strict Modal System */
+    /* Screen & Modal Visibility System */
     .generic-modal {
       display: none !important;
       position: fixed;
@@ -584,7 +563,7 @@
       border: 1px solid var(--accent-blue);
       border-radius: 20px;
       padding: 30px 24px;
-      max-width: 480px;
+      max-width: 440px;
       width: 100%;
       text-align: center;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
@@ -662,7 +641,68 @@
   </div>
 </div>
 
-<!-- 3. Main Portal Application -->
+<!-- 3. Mandatory Plan Selection Screen (Appears immediately after login) -->
+<div id="planSelectionScreen" class="auth-box" style="display:none; max-width:480px;">
+  <div class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Active Plan Required</div>
+  <h2 style="font-size: 20px; margin-bottom: 6px;">⚡ Select Your Access Plan</h2>
+  <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">पोर्टल में प्रवेश करने के लिए अपना प्लान चुनें:</p>
+
+  <!-- Monthly Plan Card -->
+  <div class="plan-card" onclick="promptPlanConfirmation(79, 'Monthly Plan (30 Days Validity + 30 Days History)', 30)">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <strong style="color:#fff; font-size:15px;">🗓️ Monthly Pack</strong>
+      <span style="font-size:18px; font-weight:800; color:#38bdf8;">₹79 <small style="font-size:11px; color:#94a3b8;">/ Month</small></span>
+    </div>
+    <div style="font-size:12px; color:#94a3b8;">• 30 Days Full Portal Access<br>• <strong>30-Day</strong> Print History Retention</div>
+  </div>
+
+  <!-- Yearly Plan Card -->
+  <div class="plan-card" style="border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.05);" onclick="promptPlanConfirmation(899, 'Yearly Super Saver (365 Days Validity + 365 Days History)', 365)">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+      <strong style="color:#fbbf24; font-size:15px;">👑 Yearly Super Saver</strong>
+      <span style="font-size:18px; font-weight:800; color:#fbbf24;">₹899 <small style="font-size:11px; color:#94a3b8;">/ Year</small></span>
+    </div>
+    <div style="font-size:12px; color:#94a3b8;">• 365 Days Uninterrupted Access<br>• <strong>365-Day (1 Year)</strong> Full History Retention</div>
+  </div>
+
+  <button class="action-btn btn-reset" style="width:100%; margin-top:8px;" onclick="cancelToLogin()">🔒 Logout / Cancel</button>
+</div>
+
+<!-- Plan Confirmation Modal -->
+<div id="planConfirmModal" class="generic-modal">
+  <div class="generic-modal-box">
+    <h3 style="font-size: 18px; color: #fbbf24; margin-bottom: 10px;">⚠️ Plan Confirmation</h3>
+    <p id="confirmModalText" style="font-size: 14px; margin-bottom: 20px; color: #fff;">क्या आप इस प्लान के साथ आगे बढ़ना चाहते हैं?</p>
+    <div class="btn-group">
+      <button class="action-btn btn-download" onclick="proceedToPayment()">✅ Yes, Proceed to Pay</button>
+      <button class="action-btn btn-reset" onclick="cancelPlanConfirmation()">❌ No, Go Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dedicated Payment Modal (Strictly only 'Change Plan' & 'Cancel' Buttons) -->
+<div id="qrPaymentModal" class="generic-modal">
+  <div class="generic-modal-box">
+    <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay via UPI</div>
+    <h3 id="paymentModalPlanTitle" style="font-size: 18px; color: #fff; margin-bottom: 4px;">Service Activation Payment</h3>
+    <div id="paymentModalAmountDisplay" style="font-size: 26px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">₹0</div>
+    <div style="font-size:11px; color:var(--accent-blue); margin-bottom:12px;">UPI ID: <strong>SPICED92849611072221935@yesbankltd</strong></div>
+
+    <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom:10px;">
+      <img id="portalQrCodeImage" style="width: 220px; height: 220px; display: block;" alt="Payment QR Code">
+    </div>
+
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">PhonePe, GPay, Paytm, BHIM UPI से स्कैन करके पेमेंट करें।</p>
+
+    <!-- Strictly ONLY 'Change Plan' and 'Cancel' Buttons -->
+    <div class="btn-group">
+      <button class="action-btn btn-add" style="padding:10px 18px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
+      <button class="action-btn btn-reset" style="padding:10px 18px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Main Portal Application (Accessible only after validation) -->
 <div id="mainApp">
   <div class="tab-nav">
     <button class="tab-btn active" onclick="switchTab('tab-cards')">💳 ID Card (5 Slots)</button>
@@ -674,19 +714,15 @@
     <button class="tab-btn" onclick="switchTab('tab-resizer')">📐 Image Resizer</button>
     <button class="tab-btn" onclick="switchTab('tab-pdf-to-jpg')">🖼️ PDF to JPG (Manual DPI)</button>
     <button class="tab-btn" onclick="switchTab('tab-pdf-compressor')">🗜️ PDF Compressor</button>
-    <button id="historyTabBtn" class="tab-btn" onclick="switchTab('tab-history')" style="border-color: rgba(56, 189, 248, 0.5);">📂 History (30-Day)</button>
+    <button id="historyTabBtn" class="tab-btn" onclick="switchTab('tab-history')" style="border-color: rgba(56, 189, 248, 0.5);">📂 History</button>
   </div>
 
   <div class="container">
-    <!-- Top Header Bar with Live Validity Counter, Extend Service & Logout -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
       <div id="validityCounterBadge" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;">
-        ⏳ Validity: Initializing...
+        ⏳ Plan Validation: Initializing...
       </div>
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <button id="extendServiceBtn" class="btn-extend-service" onclick="openOfferModal()">⚡ Extend Your Service</button>
-        <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
-      </div>
+      <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
     <!-- TAB 1: 5 CARDS SYSTEM -->
@@ -1146,67 +1182,6 @@
   </div>
 </div>
 
-<!-- Plan Selector Modal -->
-<div id="planSelectorModal" class="generic-modal">
-  <div class="generic-modal-box">
-    <div class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Membership Plans</div>
-    <h2 style="font-size: 20px; margin-bottom: 6px;">⚡ Extend Portal Service</h2>
-    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">अपनी पसंद का प्लान चुनें और सर्विस तुरंत रिन्यू करें</p>
-
-    <!-- Monthly Plan Card -->
-    <div class="plan-card" onclick="promptPlanConfirmation(79, 'Monthly Plan (30 Days Validity + 30 Days History)', 30)">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-        <strong style="color:#fff; font-size:15px;">🗓️ Monthly Pack</strong>
-        <span style="font-size:18px; font-weight:800; color:#38bdf8;">₹79 <small style="font-size:11px; color:#94a3b8;">/ Month</small></span>
-      </div>
-      <div style="font-size:12px; color:#94a3b8;">• 30 Days Portal Access<br>• <strong>30-Day</strong> Print History Retention</div>
-    </div>
-
-    <!-- Yearly Plan Card -->
-    <div class="plan-card" style="border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.05);" onclick="promptPlanConfirmation(899, 'Yearly Super Saver (365 Days Validity + 365 Days History)', 365)">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-        <strong style="color:#fbbf24; font-size:15px;">👑 Yearly Super Plan</strong>
-        <span style="font-size:18px; font-weight:800; color:#fbbf24;">₹899 <small style="font-size:11px; color:#94a3b8;">/ Year</small></span>
-      </div>
-      <div style="font-size:12px; color:#94a3b8;">• 365 Days Uninterrupted Access<br>• <strong>365-Day (1 Year)</strong> Full History Retention</div>
-    </div>
-
-    <button class="action-btn btn-reset" style="width:100%; margin-top:8px;" onclick="closeOfferModal()">रद्द करें</button>
-  </div>
-</div>
-
-<!-- Plan Confirmation Modal -->
-<div id="planConfirmModal" class="generic-modal">
-  <div class="generic-modal-box">
-    <h3 style="font-size: 18px; color: #fbbf24; margin-bottom: 10px;">⚠️ Confirmation</h3>
-    <p id="confirmModalText" style="font-size: 14px; margin-bottom: 20px; color: #fff;">क्या आप इस प्लान को चुनकर पेमेंट के लिए आगे बढ़ना चाहते हैं?</p>
-    <div class="btn-group">
-      <button class="action-btn btn-download" onclick="proceedToPayment()">✅ हाँ, पेमेंट करें (Yes)</button>
-      <button class="action-btn btn-reset" onclick="cancelPlanConfirmation()">❌ नहीं (No)</button>
-    </div>
-  </div>
-</div>
-
-<!-- QR Payment Modal -->
-<div id="qrPaymentModal" class="generic-modal">
-  <div class="generic-modal-box">
-    <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay</div>
-    <h3 id="paymentModalPlanTitle" style="font-size: 18px; color: #fff; margin-bottom: 4px;">Service Extension Payment</h3>
-    <div id="paymentModalAmountDisplay" style="font-size: 24px; font-weight: 800; color: #fbbf24; margin-bottom: 12px;">₹0</div>
-
-    <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-      <img id="portalQrCodeImage" style="width: 220px; height: 220px; display: block;" alt="Payment QR Code">
-    </div>
-
-    <p style="font-size: 12px; color: var(--text-muted); margin: 12px 0 6px 0;">Google Pay, PhonePe, Paytm, BHIM UPI से स्कैन करें</p>
-
-    <div class="btn-group" style="margin-top:15px;">
-      <button class="action-btn btn-download" onclick="confirmPaymentAndExtend()">✅ Payment Done (Extend Now)</button>
-      <button class="action-btn btn-reset" onclick="closePaymentModal()">बंद करें</button>
-    </div>
-  </div>
-</div>
-
 <!-- Global Crop Modal -->
 <div id="cropModal" class="generic-modal">
   <div class="generic-modal-box" style="max-width: 90vw; padding: 20px;">
@@ -1229,22 +1204,13 @@
   const AUTH_EMAIL = "oneplus777000@gmail.com";
   const INITIAL_PASS = "Pass@123";
   const EXPIRED_PASS = "Harshal@6195";
-
-  // Embedded Master QR Code Source
-  const USER_QR_IMAGE_BASE64 = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fpay%3Fpa%3Doneplus777000%40oksbi%26pn%3DHarshal%2520Marathe%26cu%3DINR";
+  const MERCHANT_UPI_ID = "SPICED92849611072221935@yesbankltd";
 
   // ==========================================================
   // DYNAMIC VALIDITY & SUBSCRIPTION ENGINE
   // ==========================================================
   function getActiveValidityExpiryTime() {
-    let expTime = localStorage.getItem('system_plan_expiry_time');
-    if (!expTime) {
-      const firstLogin = localStorage.getItem('system_first_login_date');
-      if (firstLogin) {
-        expTime = parseInt(firstLogin, 10) + (365 * 24 * 60 * 60 * 1000);
-        localStorage.setItem('system_plan_expiry_time', expTime.toString());
-      }
-    }
+    const expTime = localStorage.getItem('system_plan_expiry_time');
     return expTime ? parseInt(expTime, 10) : null;
   }
 
@@ -1261,7 +1227,7 @@
     const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
 
     if (daysRemaining <= 0) {
-      localStorage.removeItem('system_auth_pwd');
+      localStorage.removeItem('system_auth_pwd'); // Silently remove custom password
       return 0;
     }
     return daysRemaining;
@@ -1270,7 +1236,7 @@
   function getStoredPassword() {
     const remaining = checkAndHandleExpiry();
     if (remaining === 0) {
-      return EXPIRED_PASS;
+      return EXPIRED_PASS; // Harshal@6195 silently applied
     }
     return localStorage.getItem('system_auth_pwd') || INITIAL_PASS;
   }
@@ -1279,13 +1245,8 @@
     const badge = document.getElementById('validityCounterBadge');
     const remainingDays = checkAndHandleExpiry();
 
-    if (remainingDays === null) {
-      badge.innerHTML = `⏳ Account Validity: <strong style="color:#fbbf24;">365 Days Left</strong>`;
-      return;
-    }
-
-    if (remainingDays > 0) {
-      badge.innerHTML = `⏳ Account Validity: <strong style="color:#fbbf24;">${remainingDays} Days Left</strong>`;
+    if (remainingDays !== null && remainingDays > 0) {
+      badge.innerHTML = `⏳ Plan Validation: <strong style="color:#fbbf24;">${remainingDays} Days Left</strong>`;
       if (remainingDays <= 15) {
         badge.style.borderColor = '#ef4444';
         badge.style.color = '#f87171';
@@ -1296,7 +1257,7 @@
         badge.style.background = 'rgba(16, 185, 129, 0.15)';
       }
     } else {
-      badge.innerHTML = `⏳ Account Validity: <strong style="color:#ef4444;">Expired (0 Days Left)</strong>`;
+      badge.innerHTML = `⏳ Plan Validation: <strong style="color:#ef4444;">Expired (0 Days Left)</strong>`;
       badge.style.borderColor = '#ef4444';
       badge.style.color = '#f87171';
       badge.style.background = 'rgba(239, 68, 68, 0.15)';
@@ -1310,48 +1271,57 @@
   }
 
   // ==========================================================
-  // EXTEND SERVICE & PAYMENT FLOW
+  // MANDATORY PAYWALL & PAYMENT FLOW
   // ==========================================================
   let selectedPlanAmount = 79;
   let selectedPlanTitle = '';
   let selectedPlanDays = 30;
-
-  function openOfferModal() {
-    document.getElementById('planSelectorModal').classList.add('active-modal');
-  }
-
-  function closeOfferModal() {
-    document.getElementById('planSelectorModal').classList.remove('active-modal');
-  }
 
   function promptPlanConfirmation(amount, title, days) {
     selectedPlanAmount = amount;
     selectedPlanTitle = title;
     selectedPlanDays = days;
 
-    closeOfferModal();
-    document.getElementById('confirmModalText').innerText = `क्या आप ₹${amount} का '${title}' प्लान लेकर अपनी सर्विस ${days} दिनों के लिए बढ़ाना चाहते हैं?`;
+    document.getElementById('confirmModalText').innerText = `क्या आप ₹${amount} का '${title}' प्लान चुनकर पेमेंट के लिए आगे बढ़ना चाहते हैं?`;
     document.getElementById('planConfirmModal').classList.add('active-modal');
   }
 
   function cancelPlanConfirmation() {
     document.getElementById('planConfirmModal').classList.remove('active-modal');
-    openOfferModal();
   }
 
   function proceedToPayment() {
     document.getElementById('planConfirmModal').classList.remove('active-modal');
     document.getElementById('paymentModalPlanTitle').innerText = selectedPlanTitle;
     document.getElementById('paymentModalAmountDisplay').innerText = `₹${selectedPlanAmount}`;
-    document.getElementById('portalQrCodeImage').src = USER_QR_IMAGE_BASE64;
+
+    // Generate dynamic QR Code for SPICED92849611072221935@yesbankltd with exact amount
+    const upiUri = `upi://pay?pa=${encodeURIComponent(MERCHANT_UPI_ID)}&pn=${encodeURIComponent("OnePlus Online Services")}&am=${selectedPlanAmount}&cu=INR&tn=${encodeURIComponent(selectedPlanTitle)}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUri)}`;
+    
+    document.getElementById('portalQrCodeImage').src = qrUrl;
+    document.getElementById('planSelectionScreen').style.display = 'none';
     document.getElementById('qrPaymentModal').classList.add('active-modal');
   }
 
-  function closePaymentModal() {
+  function changePlanFromPayment() {
     document.getElementById('qrPaymentModal').classList.remove('active-modal');
+    document.getElementById('planSelectionScreen').style.display = 'block';
   }
 
-  function confirmPaymentAndExtend() {
+  function cancelPaymentToLogin() {
+    document.getElementById('qrPaymentModal').classList.remove('active-modal');
+    cancelToLogin();
+  }
+
+  function cancelToLogin() {
+    sessionStorage.removeItem('isLoggedIn');
+    document.getElementById('planSelectionScreen').style.display = 'none';
+    loginScreen.style.display = 'block';
+    loginPass.value = '';
+  }
+
+  function activatePlanAndOpenApp() {
     const currentExp = getActiveValidityExpiryTime() || Date.now();
     const baseTime = Math.max(Date.now(), currentExp);
     const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
@@ -1359,9 +1329,13 @@
     localStorage.setItem('system_plan_expiry_time', newExpTime.toString());
     localStorage.setItem('system_active_plan_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
 
-    closePaymentModal();
+    document.getElementById('qrPaymentModal').classList.remove('active-modal');
+    document.getElementById('planSelectionScreen').style.display = 'none';
+    mainApp.style.display = 'block';
+
     updateValidityDisplay();
-    alert(`🎉 पेमेंट सफलतापूर्वक सत्यापित हो गया!\nआपकी सर्विस में +${selectedPlanDays} दिन जोड़ दिए गए हैं और हिस्ट्री रिटेंशन ${selectedPlanDays >= 365 ? '365 Days' : '30 Days'} सेट हो गई है।`);
+    initAllCanvases();
+    cleanupOldHistoryRecords();
   }
 
   // ==========================================================
@@ -1589,21 +1563,23 @@
     const currentPass = getStoredPassword().trim();
 
     if (inputEmail === AUTH_EMAIL.toLowerCase() && inputPass === currentPass) {
-      if (!localStorage.getItem('system_first_login_date')) {
-        localStorage.setItem('system_first_login_date', Date.now().toString());
-        localStorage.setItem('system_plan_expiry_time', (Date.now() + (365 * 24 * 60 * 60 * 1000)).toString());
-        localStorage.setItem('system_active_plan_tier', 'yearly');
-      }
-
       sessionStorage.setItem('isLoggedIn', 'true');
       loginScreen.style.display = 'none';
       changePwdScreen.style.display = 'none';
-      mainApp.style.display = 'block';
       errorMsg.style.display = 'none';
 
-      updateValidityDisplay();
-      initAllCanvases();
-      cleanupOldHistoryRecords();
+      const remainingDays = checkAndHandleExpiry();
+
+      // If active plan already exists and is valid, enter directly
+      if (remainingDays !== null && remainingDays > 0) {
+        mainApp.style.display = 'block';
+        updateValidityDisplay();
+        initAllCanvases();
+        cleanupOldHistoryRecords();
+      } else {
+        // Direct Paywall Screen on Login
+        document.getElementById('planSelectionScreen').style.display = 'block';
+      }
     } else {
       errorMsg.style.display = 'block';
     }
@@ -1616,6 +1592,7 @@
     sessionStorage.removeItem('isLoggedIn');
     mainApp.style.display = 'none';
     changePwdScreen.style.display = 'none';
+    document.getElementById('planSelectionScreen').style.display = 'none';
     loginScreen.style.display = 'block';
     loginPass.value = '';
   });
