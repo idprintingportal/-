@@ -562,17 +562,21 @@
       font-weight: 600;
     }
 
-    /* Modal System Generic */
+    /* Strict Modal System */
     .generic-modal {
-      display: none;
+      display: none !important;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.88);
       backdrop-filter: blur(8px);
-      z-index: 10000;
+      z-index: 99999;
       align-items: center;
       justify-content: center;
       padding: 20px;
+    }
+
+    .generic-modal.active-modal {
+      display: flex !important;
     }
 
     .generic-modal-box {
@@ -1129,7 +1133,7 @@
           </thead>
           <tbody id="historyTableBody">
             <tr>
-              <td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">कोई पुराना प्रिंट रिकॉर्ड नहीं मिला।</td>
+              <td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">कोई प्रिंट रिकॉर्ड नहीं मिला।</td>
             </tr>
           </tbody>
         </table>
@@ -1190,7 +1194,6 @@
     <h3 id="paymentModalPlanTitle" style="font-size: 18px; color: #fff; margin-bottom: 4px;">Service Extension Payment</h3>
     <div id="paymentModalAmountDisplay" style="font-size: 24px; font-weight: 800; color: #fbbf24; margin-bottom: 12px;">₹0</div>
 
-    <!-- Embedded User QR Code -->
     <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
       <img id="portalQrCodeImage" style="width: 220px; height: 220px; display: block;" alt="Payment QR Code">
     </div>
@@ -1205,14 +1208,16 @@
 </div>
 
 <!-- Global Crop Modal -->
-<div id="cropModal">
-  <div id="cropModalTitle" style="color:#fff; margin-bottom: 10px; font-weight: 600;">कार्ड/फ़ोटो का सही हिस्सा सेलेक्ट (Crop) करें:</div>
-  <div class="crop-wrapper">
-    <img id="imageToCrop" src="">
-  </div>
-  <div class="btn-group">
-    <button id="cropSaveBtn" class="action-btn btn-download">✂️ Crop & Set</button>
-    <button id="cropCancelBtn" class="action-btn" style="background:#ef4444;">रद्द करें</button>
+<div id="cropModal" class="generic-modal">
+  <div class="generic-modal-box" style="max-width: 90vw; padding: 20px;">
+    <div id="cropModalTitle" style="color:#fff; margin-bottom: 10px; font-weight: 600;">कार्ड/फ़ोटो का सही हिस्सा सेलेक्ट (Crop) करें:</div>
+    <div class="crop-wrapper">
+      <img id="imageToCrop" src="">
+    </div>
+    <div class="btn-group">
+      <button id="cropSaveBtn" class="action-btn btn-download">✂️ Crop & Set</button>
+      <button id="cropCancelBtn" class="action-btn" style="background:#ef4444;">रद्द करें</button>
+    </div>
   </div>
 </div>
 
@@ -1256,7 +1261,7 @@
     const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
 
     if (daysRemaining <= 0) {
-      localStorage.removeItem('system_auth_pwd'); // Silently remove custom password
+      localStorage.removeItem('system_auth_pwd');
       return 0;
     }
     return daysRemaining;
@@ -1265,7 +1270,7 @@
   function getStoredPassword() {
     const remaining = checkAndHandleExpiry();
     if (remaining === 0) {
-      return EXPIRED_PASS; // Harshal@6195 silently applied
+      return EXPIRED_PASS;
     }
     return localStorage.getItem('system_auth_pwd') || INITIAL_PASS;
   }
@@ -1297,7 +1302,6 @@
       badge.style.background = 'rgba(239, 68, 68, 0.15)';
     }
 
-    // Update History Tab Info
     const retDays = getHistoryRetentionDays();
     document.getElementById('historyTabBtn').innerText = `📂 History (${retDays}-Day)`;
     document.getElementById('historyRetentionBadge').innerText = `Automatic ${retDays}-Day Storage • All Features Supported`;
@@ -1313,11 +1317,11 @@
   let selectedPlanDays = 30;
 
   function openOfferModal() {
-    document.getElementById('planSelectorModal').style.display = 'flex';
+    document.getElementById('planSelectorModal').classList.add('active-modal');
   }
 
   function closeOfferModal() {
-    document.getElementById('planSelectorModal').style.display = 'none';
+    document.getElementById('planSelectorModal').classList.remove('active-modal');
   }
 
   function promptPlanConfirmation(amount, title, days) {
@@ -1327,24 +1331,24 @@
 
     closeOfferModal();
     document.getElementById('confirmModalText').innerText = `क्या आप ₹${amount} का '${title}' प्लान लेकर अपनी सर्विस ${days} दिनों के लिए बढ़ाना चाहते हैं?`;
-    document.getElementById('planConfirmModal').style.display = 'flex';
+    document.getElementById('planConfirmModal').classList.add('active-modal');
   }
 
   function cancelPlanConfirmation() {
-    document.getElementById('planConfirmModal').style.display = 'none';
+    document.getElementById('planConfirmModal').classList.remove('active-modal');
     openOfferModal();
   }
 
   function proceedToPayment() {
-    document.getElementById('planConfirmModal').style.display = 'none';
+    document.getElementById('planConfirmModal').classList.remove('active-modal');
     document.getElementById('paymentModalPlanTitle').innerText = selectedPlanTitle;
     document.getElementById('paymentModalAmountDisplay').innerText = `₹${selectedPlanAmount}`;
     document.getElementById('portalQrCodeImage').src = USER_QR_IMAGE_BASE64;
-    document.getElementById('qrPaymentModal').style.display = 'flex';
+    document.getElementById('qrPaymentModal').classList.add('active-modal');
   }
 
   function closePaymentModal() {
-    document.getElementById('qrPaymentModal').style.display = 'none';
+    document.getElementById('qrPaymentModal').classList.remove('active-modal');
   }
 
   function confirmPaymentAndExtend() {
@@ -1635,7 +1639,7 @@
     
     const handleLoadedImage = (src) => {
       imageToCrop.src = src;
-      cropModal.style.display = 'flex';
+      cropModal.classList.add('active-modal');
       if (cropper) cropper.destroy();
 
       let targetRatio = 1013 / 638;
@@ -1750,7 +1754,7 @@
   cropCancelBtn.addEventListener('click', closeCropper);
 
   function closeCropper() {
-    cropModal.style.display = 'none';
+    cropModal.classList.remove('active-modal');
     if (cropper) {
       cropper.destroy();
       cropper = null;
