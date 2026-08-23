@@ -681,7 +681,7 @@
   </div>
 </div>
 
-<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan' & 'Cancel' Buttons) -->
+<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan', 'Cancel' & 'Payment Done' Buttons) -->
 <div id="qrPaymentModal" class="generic-modal">
   <div class="generic-modal-box">
     <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay via UPI</div>
@@ -693,12 +693,15 @@
       <img id="portalQrCodeImage" style="width: 210px; height: 210px; display: block;" alt="Payment QR Code">
     </div>
 
-    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">PhonePe, GPay, Paytm से स्कैन करके पेमेंट करें। पेमेंट होने के बाद ऑटोमैटिक लॉगिन हो जाएगा।</p>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">PhonePe, GPay, Paytm से स्कैन करके पेमेंट करें। पेमेंट होने के बाद नीचे <strong>'Payment Done'</strong> बटन दबाएं।</p>
 
-    <!-- Strictly ONLY 'Change Plan' and 'Cancel' Buttons -->
-    <div class="btn-group">
-      <button class="action-btn btn-add" style="padding:10px 18px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
-      <button class="action-btn btn-reset" style="padding:10px 18px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
+    <!-- Payment Done Button + Change Plan + Cancel Buttons -->
+    <div class="btn-group" style="flex-direction:column; gap:8px;">
+      <button class="action-btn btn-download" style="width:100%; padding:11px;" onclick="simulatePaymentSuccess()">✅ Payment Done (Redirect to Login)</button>
+      <div style="display:flex; gap:8px; width:100%;">
+        <button class="action-btn btn-add" style="flex:1; padding:9px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
+        <button class="action-btn btn-reset" style="flex:1; padding:9px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1311,7 +1314,7 @@
     loginPass.value = '';
   }
 
-  // Simulated Payment Success Function (Call this once payment is done to activate plan and redirect to login/portal)
+  // Payment Done Button Handler
   window.simulatePaymentSuccess = function() {
     const currentExp = getActiveValidityExpiryTime() || Date.now();
     const baseTime = Math.max(Date.now(), currentExp);
@@ -1323,10 +1326,10 @@
     document.getElementById('qrPaymentModal').classList.remove('active-modal');
     document.getElementById('planSelectionScreen').style.display = 'none';
     
-    // Direct redirect to login page as requested, or directly open app. User asked: "jaise hi koi bhi payment karta hai to use directly login page pe redirect ho jana chahiye... Ek baar usne payment kar diya to wo uski validation ke liye active ho jana chahiye."
+    // Redirect directly back to login screen as requested
     loginScreen.style.display = 'block';
     loginPass.value = '';
-    alert('🎉 Payment Successful! Your plan is now active. Please login with your password to access the portal.');
+    alert('🎉 Payment Successful! Your plan is now active. Please login with your password.');
   };
 
   // ==========================================================
@@ -1561,7 +1564,7 @@
 
       const remainingDays = checkAndHandleExpiry();
 
-      // Agar pehle se valid plan active hai toh seedha app khulegi, warna plan/payment screen aayegi
+      // Agar valid plan active hai toh seedha app khulegi, warna plan/payment screen aayegi
       if (remainingDays !== null && remainingDays > 0) {
         mainApp.style.display = 'block';
         updateValidityDisplay();
