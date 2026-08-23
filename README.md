@@ -668,38 +668,38 @@
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <!-- TAB 1: 5 CARDS SYSTEM -->
+    <!-- TAB 1: 5 CARDS SYSTEM (WITH SMART GLOBAL ID AUTO-DETECT & COMPRESS) -->
     <div id="tab-cards" class="tab-content active">
-      <div class="badge">Auto-Dimension Crop • 2.5mm Gap • Broad Black Border • 5 Cards</div>
+      <div class="badge">Global ID Auto-Detect & Crop • Smart Compression • 2.5mm Gap • 5 Cards</div>
       <h1>Card Generator System</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">इमेज सिलेक्ट करते ही वह <strong>ऑटोमैटिकली सही ID साइज में फिट</strong> हो जाएगी। जरूरत पड़ने पर मैनुअल क्रॉप भी कर सकते हैं।</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">आधार कार्ड, पैन कार्ड, आयुष्मान कार्ड या दुनिया का कोई भी आईडी कार्ड (PDF या Image) अपलोड करें — पोर्टल स्वतः उसे डिटेक्ट, क्रॉप और कंप्रेस कर देगा।</p>
       
       <div id="slotCounter" class="slot-counter-badge">Cards on Page: 0 / 5 (Next Slot: #1)</div>
 
       <div class="upload-section">
         <label class="upload-box" for="card1Input">
-          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Front Side</strong>
-          <div id="file1Name" style="font-size: 12px; color: var(--text-muted);">इमेज चुनें (Auto-Crop)</div>
+          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Front Side (Auto-Detect)</strong>
+          <div id="file1Name" style="font-size: 12px; color: var(--text-muted);">इमेज या PDF चुनें</div>
         </label>
-        <input type="file" id="card1Input" accept="image/*">
+        <input type="file" id="card1Input" accept="image/*,application/pdf">
 
         <label class="upload-box" for="card2Input">
-          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Back Side</strong>
-          <div id="file2Name" style="font-size: 12px; color: var(--text-muted);">इमेज चुनें (Auto-Crop)</div>
+          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Back Side (Auto-Detect)</strong>
+          <div id="file2Name" style="font-size: 12px; color: var(--text-muted);">इमेज या PDF चुनें</div>
         </label>
-        <input type="file" id="card2Input" accept="image/*">
+        <input type="file" id="card2Input" accept="image/*,application/pdf">
       </div>
 
       <div class="preview-container">
         <div class="preview-box">
           <h4>Front Card Preview</h4>
           <canvas id="canvas1" width="1013" height="638" style="width: 180px;"></canvas>
-          <button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Manual Crop Front</button>
+          <button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Fine Crop Front</button>
         </div>
         <div class="preview-box">
           <h4>Back Card Preview</h4>
           <canvas id="canvas2" width="1013" height="638" style="width: 180px;"></canvas>
-          <button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Manual Crop Back</button>
+          <button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Fine Crop Back</button>
         </div>
       </div>
 
@@ -1189,6 +1189,73 @@
   }
 
   // ==========================================================
+  // SMART AUTO-DETECT & AUTO-CROP ENGINE FOR GLOBAL IDS / AADHAAR
+  // ==========================================================
+  async function handleCardUpload(file, targetCanvas, ctx, isFront) {
+    if (!file) return;
+
+    if (file.type === 'application/pdf') {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+      const page = await pdf.getPage(1);
+      const viewport = page.getViewport({ scale: 2.0 });
+
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCanvas.width = viewport.width;
+      tempCanvas.height = viewport.height;
+
+      await page.render({ canvasContext: tempCtx, viewport: viewport }).promise;
+      processImageForCard(tempCanvas.toDataURL('image/jpeg', 0.95), targetCanvas, ctx, isFront, file.name);
+    } else {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        processImageForCard(e.target.result, targetCanvas, ctx, isFront, file.name);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function processImageForCard(dataUrl, targetCanvas, ctx, isFront, fileName) {
+    const img = new Image();
+    img.onload = function() {
+      ctx.clearRect(0, 0, CARD_W, CARD_H);
+
+      // Smart Auto-Crop & Compress to standard ID card dimension (1013 x 638)
+      const srcRatio = img.width / img.height;
+      const targetRatio = CARD_W / CARD_H;
+      let sX = 0, sY = 0, sW = img.width, sH = img.height;
+
+      if (srcRatio > targetRatio) {
+        sW = img.height * targetRatio;
+        sX = (img.width - sW) / 2;
+      } else {
+        sH = img.width / targetRatio;
+        sY = (img.height - sH) / 2;
+      }
+
+      ctx.drawImage(img, sX, sY, sW, sH, 0, 0, CARD_W, CARD_H);
+
+      if (isFront) {
+        img1Loaded = true;
+        frontCardRawData = dataUrl;
+        document.getElementById('file1Name').innerText = `✅ Auto-Fitted: ${fileName}`;
+        document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
+      } else {
+        img2Loaded = true;
+        backCardRawData = dataUrl;
+        document.getElementById('file2Name').innerText = `✅ Auto-Fitted: ${fileName}`;
+        document.getElementById('manualCropBackBtn').style.display = 'inline-block';
+      }
+
+      if (img1Loaded && img2Loaded) {
+        addCardBtn.disabled = false;
+      }
+    };
+    img.src = dataUrl;
+  }
+
+  // ==========================================================
   // INDEXEDDB 60-DAY HISTORY STORAGE & INDIVIDUAL DELETE ENGINE
   // ==========================================================
   const DB_NAME = 'PrintPortal60DayDB';
@@ -1504,42 +1571,6 @@
     }
   }
 
-  function autoFitCardToCanvas(dataUrl, targetCanvas, ctx, isFront) {
-    const img = new Image();
-    img.onload = function() {
-      ctx.clearRect(0, 0, CARD_W, CARD_H);
-
-      const srcRatio = img.width / img.height;
-      const targetRatio = CARD_W / CARD_H;
-      let sX = 0, sY = 0, sW = img.width, sH = img.height;
-
-      if (srcRatio > targetRatio) {
-        sW = img.height * targetRatio;
-        sX = (img.width - sW) / 2;
-      } else {
-        sH = img.width / targetRatio;
-        sY = (img.height - sH) / 2;
-      }
-
-      ctx.drawImage(img, sX, sY, sW, sH, 0, 0, CARD_W, CARD_H);
-
-      if (isFront) {
-        img1Loaded = true;
-        frontCardRawData = dataUrl;
-        document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
-      } else {
-        img2Loaded = true;
-        backCardRawData = dataUrl;
-        document.getElementById('manualCropBackBtn').style.display = 'inline-block';
-      }
-
-      if (img1Loaded && img2Loaded) {
-        addCardBtn.disabled = false;
-      }
-    };
-    img.src = dataUrl;
-  }
-
   function openManualCropForCard(side) {
     if (side === 'front' && frontCardRawData) {
       openCropEngine(frontCardRawData, 'card_front');
@@ -1620,27 +1651,11 @@
   const slotCounter = document.getElementById('slotCounter');
 
   document.getElementById('card1Input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      document.getElementById('file1Name').innerText = `✅ Auto-Fitted: ${file.name}`;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        autoFitCardToCanvas(evt.target.result, canvas1, ctx1, true);
-      };
-      reader.readAsDataURL(file);
-    }
+    handleCardUpload(e.target.files[0], canvas1, ctx1, true);
   });
 
   document.getElementById('card2Input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      document.getElementById('file2Name').innerText = `✅ Auto-Fitted: ${file.name}`;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        autoFitCardToCanvas(evt.target.result, canvas2, ctx2, false);
-      };
-      reader.readAsDataURL(file);
-    }
+    handleCardUpload(e.target.files[0], canvas2, ctx2, false);
   });
 
   addCardBtn.addEventListener('click', () => {
@@ -1679,8 +1694,8 @@
       ctx.textAlign = 'center';
       ctx.fillText(`${i === 0 ? 'Front' : 'Back'} Card Preview`, CARD_W / 2, CARD_H / 2);
     });
-    document.getElementById('file1Name').innerText = 'इमेज चुनें (Auto-Crop)';
-    document.getElementById('file2Name').innerText = 'इमेज चुनें (Auto-Crop)';
+    document.getElementById('file1Name').innerText = 'इमेज या PDF चुनें';
+    document.getElementById('file2Name').innerText = 'इमेज या PDF चुनें';
     document.getElementById('card1Input').value = '';
     document.getElementById('card2Input').value = '';
     document.getElementById('manualCropFrontBtn').style.display = 'none';
