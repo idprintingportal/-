@@ -642,7 +642,7 @@
   </div>
 </div>
 
-<!-- 3. Mandatory Plan Selection Screen (Appears immediately after successful login) -->
+<!-- 3. Plan Selection Screen -->
 <div id="planSelectionScreen" class="auth-box" style="display:none; max-width:480px;">
   <div class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Active Plan Required</div>
   <h2 style="font-size: 20px; margin-bottom: 6px;">⚡ Select Your Access Plan</h2>
@@ -693,7 +693,7 @@
       <img id="portalQrCodeImage" style="width: 210px; height: 210px; display: block;" alt="Payment QR Code">
     </div>
 
-    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">PhonePe, GPay, Paytm से स्कैन करके पेमेंट करें।</p>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">PhonePe, GPay, Paytm से स्कैन करके पेमेंट करें। पेमेंट होने के बाद ऑटोमैटिक लॉगिन हो जाएगा।</p>
 
     <!-- Strictly ONLY 'Change Plan' and 'Cancel' Buttons -->
     <div class="btn-group">
@@ -1311,6 +1311,24 @@
     loginPass.value = '';
   }
 
+  // Simulated Payment Success Function (Call this once payment is done to activate plan and redirect to login/portal)
+  window.simulatePaymentSuccess = function() {
+    const currentExp = getActiveValidityExpiryTime() || Date.now();
+    const baseTime = Math.max(Date.now(), currentExp);
+    const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
+
+    localStorage.setItem('system_plan_expiry_time', newExpTime.toString());
+    localStorage.setItem('system_active_plan_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
+
+    document.getElementById('qrPaymentModal').classList.remove('active-modal');
+    document.getElementById('planSelectionScreen').style.display = 'none';
+    
+    // Direct redirect to login page as requested, or directly open app. User asked: "jaise hi koi bhi payment karta hai to use directly login page pe redirect ho jana chahiye... Ek baar usne payment kar diya to wo uski validation ke liye active ho jana chahiye."
+    loginScreen.style.display = 'block';
+    loginPass.value = '';
+    alert('🎉 Payment Successful! Your plan is now active. Please login with your password to access the portal.');
+  };
+
   // ==========================================================
   // INDEXEDDB DYNAMIC STORAGE ENGINE
   // ==========================================================
@@ -1541,8 +1559,17 @@
       changePwdScreen.style.display = 'none';
       errorMsg.style.display = 'none';
 
-      // Always show Plan Selection screen immediately after login as requested
-      document.getElementById('planSelectionScreen').style.display = 'block';
+      const remainingDays = checkAndHandleExpiry();
+
+      // Agar pehle se valid plan active hai toh seedha app khulegi, warna plan/payment screen aayegi
+      if (remainingDays !== null && remainingDays > 0) {
+        mainApp.style.display = 'block';
+        updateValidityDisplay();
+        initAllCanvases();
+        cleanupOldHistoryRecords();
+      } else {
+        document.getElementById('planSelectionScreen').style.display = 'block';
+      }
     } else {
       errorMsg.style.display = 'block';
     }
