@@ -1200,7 +1200,7 @@
   }
 
   // ==========================================================
-  // MANUAL CROPPING ENGINE FOR ID CARDS
+  // FIXED ROBUST FILE UPLOAD & MANUAL CROP BRIDGE
   // ==========================================================
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
@@ -1233,8 +1233,9 @@
       reader.onload = function(e) {
         if (isFront) frontCardRawData = e.target.result;
         else backCardRawData = e.target.result;
-        openCropEngine(e.target.result, isFront ? 'card_front' : 'card_back');
+        
         document.getElementById(isFront ? 'file1Name' : 'file2Name').innerText = `✅ Loaded: ${file.name}`;
+        openCropEngine(e.target.result, isFront ? 'card_front' : 'card_back');
       };
       reader.readAsDataURL(file);
     }
@@ -1253,8 +1254,8 @@
     if (isFront) frontCardRawData = dataUrl;
     else backCardRawData = dataUrl;
 
-    openCropEngine(dataUrl, isFront ? 'card_front' : 'card_back');
     document.getElementById(isFront ? 'file1Name' : 'file2Name').innerText = `✅ Loaded: ${fileName}`;
+    openCropEngine(dataUrl, isFront ? 'card_front' : 'card_back');
   }
 
   // ==========================================================
