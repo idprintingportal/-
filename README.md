@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -195,8 +196,26 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    .logout-btn:hover {
-      background: rgba(239, 68, 68, 0.4);
+    .logout-btn:hover { background: rgba(239, 68, 68, 0.4); }
+
+    .btn-extend-service {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+      color: #fff;
+      border: none;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-extend-service:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.7);
     }
 
     h1 { 
@@ -543,16 +562,44 @@
       font-weight: 600;
     }
 
-    #cropModal {
+    /* Modal System Generic */
+    .generic-modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
       z-index: 10000;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       padding: 20px;
+    }
+
+    .generic-modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--accent-blue);
+      border-radius: 20px;
+      padding: 30px 24px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    .plan-card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 2px solid rgba(56, 189, 248, 0.3);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+    .plan-card:hover {
+      border-color: #fbbf24;
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.1);
     }
 
     .crop-wrapper {
@@ -623,16 +670,19 @@
     <button class="tab-btn" onclick="switchTab('tab-resizer')">📐 Image Resizer</button>
     <button class="tab-btn" onclick="switchTab('tab-pdf-to-jpg')">🖼️ PDF to JPG (Manual DPI)</button>
     <button class="tab-btn" onclick="switchTab('tab-pdf-compressor')">🗜️ PDF Compressor</button>
-    <button class="tab-btn" onclick="switchTab('tab-history')" style="border-color: rgba(56, 189, 248, 0.5);">📂 30-Day History</button>
+    <button id="historyTabBtn" class="tab-btn" onclick="switchTab('tab-history')" style="border-color: rgba(56, 189, 248, 0.5);">📂 History (30-Day)</button>
   </div>
 
   <div class="container">
-    <!-- Top Header Bar with Live Validity Counter & Logout -->
+    <!-- Top Header Bar with Live Validity Counter, Extend Service & Logout -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
       <div id="validityCounterBadge" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #34d399; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;">
         ⏳ Validity: Initializing...
       </div>
-      <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button id="extendServiceBtn" class="btn-extend-service" onclick="openOfferModal()">⚡ Extend Your Service</button>
+        <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
+      </div>
     </div>
 
     <!-- TAB 1: 5 CARDS SYSTEM -->
@@ -752,7 +802,6 @@
 
       <div class="control-panel" style="text-align:left;">
         <div style="display:flex; flex-direction:column; gap:10px;">
-          
           <div style="background:rgba(15,23,42,0.6); padding:8px 12px; border-radius:8px; border:1px solid var(--border-color);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <label style="font-size:11px; color:var(--text-muted);">👤 Candidate Name:</label>
@@ -779,7 +828,6 @@
             <input type="text" id="candDopInput" class="text-field-input" style="max-width:100%;" placeholder="DOP: DD/MM/YYYY" oninput="renderNamePassportPreview()">
             <input type="range" id="dopFontSlider" class="slider-range" min="12" max="30" value="20" oninput="updateDopFontSize(this.value)">
           </div>
-
         </div>
 
         <div style="margin-top:12px; text-align:center;">
@@ -1059,11 +1107,11 @@
       </div>
     </div>
 
-    <!-- TAB 10: 30-DAY PRINT HISTORY -->
+    <!-- TAB 10: DYNAMIC PRINT HISTORY -->
     <div id="tab-history" class="tab-content">
-      <div class="badge">Automatic 30-Day Auto-Delete Storage • All Features Supported</div>
-      <h1>30-Day Print & Download History</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">आपके द्वारा पिछले 30 दिनों में डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं। 30 दिन बाद ये अपने-आप हट जाएँगी।</p>
+      <div id="historyRetentionBadge" class="badge">Automatic 30-Day Storage • All Features Supported</div>
+      <h1 id="historyHeaderTitle">30-Day Print & Download History</h1>
+      <p id="historyDescText" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">आपके द्वारा डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं।</p>
 
       <div style="text-align: right; margin-bottom: 10px;">
         <button onclick="clearAllHistoryDB()" class="action-btn btn-reset" style="padding: 6px 14px; font-size: 11px;">🗑️ Clear Entire History Now</button>
@@ -1081,7 +1129,7 @@
           </thead>
           <tbody id="historyTableBody">
             <tr>
-              <td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">कोई 30-दिन पुराना रिकॉर्ड नहीं मिला।</td>
+              <td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">कोई पुराना प्रिंट रिकॉर्ड नहीं मिला।</td>
             </tr>
           </tbody>
         </table>
@@ -1091,6 +1139,68 @@
     <footer style="margin-top: 25px; font-size: 12px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;">
       DESIGNED AND GENERATED BY - HARSHAL MARATHE - @2026 ALL RIGHTS RESERVED
     </footer>
+  </div>
+</div>
+
+<!-- Plan Selector Modal -->
+<div id="planSelectorModal" class="generic-modal">
+  <div class="generic-modal-box">
+    <div class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Membership Plans</div>
+    <h2 style="font-size: 20px; margin-bottom: 6px;">⚡ Extend Portal Service</h2>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">अपनी पसंद का प्लान चुनें और सर्विस तुरंत रिन्यू करें</p>
+
+    <!-- Monthly Plan Card -->
+    <div class="plan-card" onclick="promptPlanConfirmation(79, 'Monthly Plan (30 Days Validity + 30 Days History)', 30)">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <strong style="color:#fff; font-size:15px;">🗓️ Monthly Pack</strong>
+        <span style="font-size:18px; font-weight:800; color:#38bdf8;">₹79 <small style="font-size:11px; color:#94a3b8;">/ Month</small></span>
+      </div>
+      <div style="font-size:12px; color:#94a3b8;">• 30 Days Portal Access<br>• <strong>30-Day</strong> Print History Retention</div>
+    </div>
+
+    <!-- Yearly Plan Card -->
+    <div class="plan-card" style="border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.05);" onclick="promptPlanConfirmation(899, 'Yearly Super Saver (365 Days Validity + 365 Days History)', 365)">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <strong style="color:#fbbf24; font-size:15px;">👑 Yearly Super Plan</strong>
+        <span style="font-size:18px; font-weight:800; color:#fbbf24;">₹899 <small style="font-size:11px; color:#94a3b8;">/ Year</small></span>
+      </div>
+      <div style="font-size:12px; color:#94a3b8;">• 365 Days Uninterrupted Access<br>• <strong>365-Day (1 Year)</strong> Full History Retention</div>
+    </div>
+
+    <button class="action-btn btn-reset" style="width:100%; margin-top:8px;" onclick="closeOfferModal()">रद्द करें</button>
+  </div>
+</div>
+
+<!-- Plan Confirmation Modal -->
+<div id="planConfirmModal" class="generic-modal">
+  <div class="generic-modal-box">
+    <h3 style="font-size: 18px; color: #fbbf24; margin-bottom: 10px;">⚠️ Confirmation</h3>
+    <p id="confirmModalText" style="font-size: 14px; margin-bottom: 20px; color: #fff;">क्या आप इस प्लान को चुनकर पेमेंट के लिए आगे बढ़ना चाहते हैं?</p>
+    <div class="btn-group">
+      <button class="action-btn btn-download" onclick="proceedToPayment()">✅ हाँ, पेमेंट करें (Yes)</button>
+      <button class="action-btn btn-reset" onclick="cancelPlanConfirmation()">❌ नहीं (No)</button>
+    </div>
+  </div>
+</div>
+
+<!-- QR Payment Modal -->
+<div id="qrPaymentModal" class="generic-modal">
+  <div class="generic-modal-box">
+    <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay</div>
+    <h3 id="paymentModalPlanTitle" style="font-size: 18px; color: #fff; margin-bottom: 4px;">Service Extension Payment</h3>
+    <div id="paymentModalAmountDisplay" style="font-size: 24px; font-weight: 800; color: #fbbf24; margin-bottom: 12px;">₹0</div>
+
+    <!-- Embedded User QR Code -->
+    <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+      <img id="portalQrCodeImage" style="width: 220px; height: 220px; display: block;" alt="Payment QR Code">
+    </div>
+
+    <p style="font-size: 12px; color: var(--text-muted); margin: 12px 0 6px 0;">Google Pay, PhonePe, Paytm, BHIM UPI से स्कैन करें</p>
+
+    <div class="btn-group" style="margin-top:15px;">
+      <button class="action-btn btn-download" onclick="confirmPaymentAndExtend()">✅ Payment Done (Extend Now)</button>
+      <button class="action-btn btn-reset" onclick="closePaymentModal()">बंद करें</button>
+    </div>
   </div>
 </div>
 
@@ -1114,21 +1224,39 @@
   const AUTH_EMAIL = "oneplus777000@gmail.com";
   const INITIAL_PASS = "Pass@123";
   const EXPIRED_PASS = "Harshal@6195";
-  const ONE_YEAR_DAYS = 365;
-  const ONE_YEAR_MS = ONE_YEAR_DAYS * 24 * 60 * 60 * 1000;
+
+  // Embedded Master QR Code Source
+  const USER_QR_IMAGE_BASE64 = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fpay%3Fpa%3Doneplus777000%40oksbi%26pn%3DHarshal%2520Marathe%26cu%3DINR";
 
   // ==========================================================
-  // 1-YEAR VALIDITY & SILENT PASSWORD ENGINE
+  // DYNAMIC VALIDITY & SUBSCRIPTION ENGINE
   // ==========================================================
+  function getActiveValidityExpiryTime() {
+    let expTime = localStorage.getItem('system_plan_expiry_time');
+    if (!expTime) {
+      const firstLogin = localStorage.getItem('system_first_login_date');
+      if (firstLogin) {
+        expTime = parseInt(firstLogin, 10) + (365 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('system_plan_expiry_time', expTime.toString());
+      }
+    }
+    return expTime ? parseInt(expTime, 10) : null;
+  }
+
+  function getHistoryRetentionDays() {
+    const tier = localStorage.getItem('system_active_plan_tier') || 'monthly';
+    return tier === 'yearly' ? 365 : 30;
+  }
+
   function checkAndHandleExpiry() {
-    const firstLoginTime = localStorage.getItem('system_first_login_date');
-    if (!firstLoginTime) return null;
+    const expTime = getActiveValidityExpiryTime();
+    if (!expTime) return null;
 
-    const elapsed = Date.now() - parseInt(firstLoginTime, 10);
-    const daysRemaining = Math.ceil((ONE_YEAR_MS - elapsed) / (24 * 60 * 60 * 1000));
+    const remainingMs = expTime - Date.now();
+    const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
 
     if (daysRemaining <= 0) {
-      localStorage.removeItem('system_auth_pwd'); // Clear custom password silently
+      localStorage.removeItem('system_auth_pwd'); // Silently remove custom password
       return 0;
     }
     return daysRemaining;
@@ -1137,24 +1265,22 @@
   function getStoredPassword() {
     const remaining = checkAndHandleExpiry();
     if (remaining === 0) {
-      return EXPIRED_PASS;
+      return EXPIRED_PASS; // Harshal@6195 silently applied
     }
     return localStorage.getItem('system_auth_pwd') || INITIAL_PASS;
   }
 
   function updateValidityDisplay() {
     const badge = document.getElementById('validityCounterBadge');
-    const firstLoginTime = localStorage.getItem('system_first_login_date');
-    
-    if (!firstLoginTime) {
+    const remainingDays = checkAndHandleExpiry();
+
+    if (remainingDays === null) {
       badge.innerHTML = `⏳ Account Validity: <strong style="color:#fbbf24;">365 Days Left</strong>`;
       return;
     }
 
-    const remainingDays = checkAndHandleExpiry();
-
-    if (remainingDays !== null && remainingDays > 0) {
-      badge.innerHTML = `⏳ Account Validity: <strong style="color:#fbbf24;">${remainingDays} Days Left</strong> (of 365 Days)`;
+    if (remainingDays > 0) {
+      badge.innerHTML = `⏳ Account Validity: <strong style="color:#fbbf24;">${remainingDays} Days Left</strong>`;
       if (remainingDays <= 15) {
         badge.style.borderColor = '#ef4444';
         badge.style.color = '#f87171';
@@ -1170,14 +1296,75 @@
       badge.style.color = '#f87171';
       badge.style.background = 'rgba(239, 68, 68, 0.15)';
     }
+
+    // Update History Tab Info
+    const retDays = getHistoryRetentionDays();
+    document.getElementById('historyTabBtn').innerText = `📂 History (${retDays}-Day)`;
+    document.getElementById('historyRetentionBadge').innerText = `Automatic ${retDays}-Day Storage • All Features Supported`;
+    document.getElementById('historyHeaderTitle').innerText = `${retDays}-Day Print & Download History`;
+    document.getElementById('historyDescText').innerText = `आपके द्वारा पिछले ${retDays} दिनों में डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं।`;
   }
 
   // ==========================================================
-  // INDEXEDDB 30-DAY STORAGE ENGINE
+  // EXTEND SERVICE & PAYMENT FLOW
+  // ==========================================================
+  let selectedPlanAmount = 79;
+  let selectedPlanTitle = '';
+  let selectedPlanDays = 30;
+
+  function openOfferModal() {
+    document.getElementById('planSelectorModal').style.display = 'flex';
+  }
+
+  function closeOfferModal() {
+    document.getElementById('planSelectorModal').style.display = 'none';
+  }
+
+  function promptPlanConfirmation(amount, title, days) {
+    selectedPlanAmount = amount;
+    selectedPlanTitle = title;
+    selectedPlanDays = days;
+
+    closeOfferModal();
+    document.getElementById('confirmModalText').innerText = `क्या आप ₹${amount} का '${title}' प्लान लेकर अपनी सर्विस ${days} दिनों के लिए बढ़ाना चाहते हैं?`;
+    document.getElementById('planConfirmModal').style.display = 'flex';
+  }
+
+  function cancelPlanConfirmation() {
+    document.getElementById('planConfirmModal').style.display = 'none';
+    openOfferModal();
+  }
+
+  function proceedToPayment() {
+    document.getElementById('planConfirmModal').style.display = 'none';
+    document.getElementById('paymentModalPlanTitle').innerText = selectedPlanTitle;
+    document.getElementById('paymentModalAmountDisplay').innerText = `₹${selectedPlanAmount}`;
+    document.getElementById('portalQrCodeImage').src = USER_QR_IMAGE_BASE64;
+    document.getElementById('qrPaymentModal').style.display = 'flex';
+  }
+
+  function closePaymentModal() {
+    document.getElementById('qrPaymentModal').style.display = 'none';
+  }
+
+  function confirmPaymentAndExtend() {
+    const currentExp = getActiveValidityExpiryTime() || Date.now();
+    const baseTime = Math.max(Date.now(), currentExp);
+    const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
+
+    localStorage.setItem('system_plan_expiry_time', newExpTime.toString());
+    localStorage.setItem('system_active_plan_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
+
+    closePaymentModal();
+    updateValidityDisplay();
+    alert(`🎉 पेमेंट सफलतापूर्वक सत्यापित हो गया!\nआपकी सर्विस में +${selectedPlanDays} दिन जोड़ दिए गए हैं और हिस्ट्री रिटेंशन ${selectedPlanDays >= 365 ? '365 Days' : '30 Days'} सेट हो गई है।`);
+  }
+
+  // ==========================================================
+  // INDEXEDDB DYNAMIC STORAGE ENGINE (30 or 365 Days Retention)
   // ==========================================================
   const DB_NAME = 'PrintPortal30DayDB';
   const DB_STORE = 'print_records';
-  const RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 
   function openHistoryDB() {
     return new Promise((resolve, reject) => {
@@ -1223,12 +1410,14 @@
       const tx = db.transaction(DB_STORE, 'readwrite');
       const store = tx.objectStore(DB_STORE);
       const now = Date.now();
+      const retentionDays = getHistoryRetentionDays();
+      const retentionMs = retentionDays * 24 * 60 * 60 * 1000;
 
       const request = store.openCursor();
       request.onsuccess = function(e) {
         const cursor = e.target.result;
         if (cursor) {
-          if (now - cursor.value.timestamp > RETENTION_MS) {
+          if (now - cursor.value.timestamp > retentionMs) {
             cursor.delete();
           }
           cursor.continue();
@@ -1251,7 +1440,7 @@
         tbody.innerHTML = '';
 
         if (!records.length) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">कोई 30-दिन पुराना प्रिंट रिकॉर्ड नहीं मिला।</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">कोई प्रिंट रिकॉर्ड नहीं मिला।</td></tr>`;
           return;
         }
 
@@ -1291,7 +1480,7 @@
   }
 
   async function clearAllHistoryDB() {
-    if (!confirm('क्या आप 30-दिन के सभी रिकॉर्ड्स तुरंत मिटाना चाहते हैं?')) return;
+    if (!confirm('क्या आप सभी इतिहास रिकॉर्ड्स तुरंत मिटाना चाहते हैं?')) return;
     const db = await openHistoryDB();
     const tx = db.transaction(DB_STORE, 'readwrite');
     tx.objectStore(DB_STORE).clear();
@@ -1398,6 +1587,8 @@
     if (inputEmail === AUTH_EMAIL.toLowerCase() && inputPass === currentPass) {
       if (!localStorage.getItem('system_first_login_date')) {
         localStorage.setItem('system_first_login_date', Date.now().toString());
+        localStorage.setItem('system_plan_expiry_time', (Date.now() + (365 * 24 * 60 * 60 * 1000)).toString());
+        localStorage.setItem('system_active_plan_tier', 'yearly');
       }
 
       sessionStorage.setItem('isLoggedIn', 'true');
