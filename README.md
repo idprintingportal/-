@@ -626,7 +626,7 @@
   </div>
 </div>
 
-<!-- 4. Main Portal Application -->
+<!-- 3. Main Portal Application -->
 <div id="mainApp">
   <div class="tab-nav">
     <button class="tab-btn active" onclick="switchTab('tab-cards')">💳 ID Card (5 Slots)</button>
@@ -638,7 +638,7 @@
     <button class="tab-btn" onclick="switchTab('tab-resizer')">📐 Image Resizer</button>
     <button class="tab-btn" onclick="switchTab('tab-pdf-to-jpg')">🖼️ PDF to JPG (Manual DPI)</button>
     <button class="tab-btn" onclick="switchTab('tab-pdf-compressor')">🗜️ PDF Compressor</button>
-    <button id="historyTabBtn" class="tab-btn" onclick="switchTab('tab-history')" style="border-color: rgba(56, 189, 248, 0.5);">📂 History (30-Day)</button>
+    <button id="historyTabBtn" class="tab-btn" onclick="switchTab('tab-history')" style="border-color: rgba(56, 189, 248, 0.5);">📂 History (60-Day)</button>
   </div>
 
   <div class="container">
@@ -1130,19 +1130,18 @@
   const SIXTY_DAYS_MS = 60 * 24 * 60 * 60 * 1000;
 
   // ==========================================================
-  // 60-DAYS SECURE ACTIVATION ENGINE (Anti-Clear Protection)
+  // 60-DAYS SECURE ACTIVATION ENGINE
   // ==========================================================
   function getActivationExpiryTime() {
     let expTime = localStorage.getItem('secure_60day_activation_expiry');
     if (!expTime) {
-      // First time login: Start 60 days countdown right now
       expTime = (Date.now() + SIXTY_DAYS_MS).toString();
       localStorage.setItem('secure_60day_activation_expiry', expTime);
     }
     return parseInt(expTime, 10);
   }
 
-  function checkAndHandleActivation() {
+  function checkAndHandleExpiry() {
     const expTime = getActivationExpiryTime();
     const remainingMs = expTime - Date.now();
     const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
@@ -1155,7 +1154,7 @@
 
   function updateValidityDisplay() {
     const badge = document.getElementById('validityCounterBadge');
-    const remainingDays = checkAndHandleActivation();
+    const remainingDays = checkAndHandleExpiry();
 
     if (remainingDays > 0) {
       badge.innerHTML = `⏳ 60-Days Portal Validity: <strong style="color:#fbbf24;">${remainingDays} Days Left</strong>`;
