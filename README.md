@@ -1200,7 +1200,7 @@
   }
 
   // ==========================================================
-  // RESTORED 100% WORKING FILE & CROP LISTENERS
+  // 100% WORKING FILE UPLOAD & CROP LISTENERS
   // ==========================================================
   document.getElementById('card1Input').addEventListener('change', (e) => {
     handleCardUpload(e.target.files[0], canvas1, ctx1, true);
@@ -1264,6 +1264,82 @@
 
     document.getElementById(isFront ? 'file1Name' : 'file2Name').innerText = `✅ Loaded: ${fileName}`;
     openCropEngine(dataUrl, isFront ? 'card_front' : 'card_back');
+  }
+
+  let cropper = null;
+  let activeCropType = 'card_front';
+  let frontCardRawData = null;
+  let backCardRawData = null;
+  const cropModal = document.getElementById('cropModal');
+  const imageToCrop = document.getElementById('imageToCrop');
+  const cropSaveBtn = document.getElementById('cropSaveBtn');
+  const cropCancelBtn = document.getElementById('cropCancelBtn');
+
+  function openCropEngine(fileOrDataUrl, type) {
+    activeCropType = type;
+    const handleLoadedImage = (src) => {
+      imageToCrop.src = src;
+      cropModal.classList.add('active-modal');
+      if (cropper) cropper.destroy();
+
+      let targetRatio = 1013 / 638;
+      if (type === 'passport' || type === 'name_passport') targetRatio = 35 / 45;
+      if (type === 'photo4x6') targetRatio = 1200 / 1800;
+
+      cropper = new Cropper(imageToCrop, {
+        aspectRatio: targetRatio,
+        viewMode: 1,
+        autoCropArea: 0.95
+      });
+    };
+
+    if (typeof fileOrDataUrl === 'string') {
+      handleLoadedImage(fileOrDataUrl);
+    } else {
+      const reader = new FileReader();
+      reader.onload = function(e) { handleLoadedImage(e.target.result); };
+      reader.readAsDataURL(fileOrDataUrl);
+    }
+  }
+
+  function openManualCropForCard(side) {
+    if (side === 'front' && frontCardRawData) {
+      openCropEngine(frontCardRawData, 'card_front');
+    } else if (side === 'back' && backCardRawData) {
+      openCropEngine(backCardRawData, 'card_back');
+    }
+  }
+
+  cropSaveBtn.addEventListener('click', () => {
+    if (!cropper) return;
+    const croppedCanvas = cropper.getCroppedCanvas({ width: 1013, height: 638, imageSmoothingQuality: 'high' });
+    
+    if (activeCropType === 'card_front') {
+      ctx1.clearRect(0, 0, 1013, 638);
+      ctx1.drawImage(croppedCanvas, 0, 0);
+      img1Loaded = true;
+      document.getElementById('file1Name').innerText = `✅ Cropped & Fitted`;
+      document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
+    } else if (activeCropType === 'card_back') {
+      ctx2.clearRect(0, 0, 1013, 638);
+      ctx2.drawImage(croppedCanvas, 0, 0);
+      img2Loaded = true;
+      document.getElementById('file2Name').innerText = `✅ Cropped & Fitted`;
+      document.getElementById('manualCropBackBtn').style.display = 'inline-block';
+    }
+
+    if (img1Loaded && img2Loaded) addCardBtn.disabled = false;
+    closeCropper();
+  });
+
+  cropCancelBtn.addEventListener('click', closeCropper);
+
+  function closeCropper() {
+    cropModal.classList.remove('active-modal');
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
   }
 
   // ==========================================================
@@ -1533,6 +1609,17 @@
     loginScreen.style.display = 'block';
     loginPass.value = '';
   });
+
+  function initAllCanvases() {
+    [ctx1, ctx2].forEach((ctx, i) => {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 1013, 638);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 24px Poppins';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${i === 0 ? 'Front' : 'Back'} Card Preview`, 1013 / 2, 638 / 2);
+    });
+  }
 </script>
 
 </body>
