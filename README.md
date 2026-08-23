@@ -542,7 +542,7 @@
       font-weight: 600;
     }
 
-    /* Screen & Modal Visibility System */
+    /* Strict Modal System */
     .generic-modal {
       display: none !important;
       position: fixed;
@@ -642,7 +642,7 @@
   </div>
 </div>
 
-<!-- 3. Mandatory Plan Selection Screen (Appears immediately after login) -->
+<!-- 3. Mandatory Plan Selection Screen (Appears immediately after successful login) -->
 <div id="planSelectionScreen" class="auth-box" style="display:none; max-width:480px;">
   <div class="badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Active Plan Required</div>
   <h2 style="font-size: 20px; margin-bottom: 6px;">⚡ Select Your Access Plan</h2>
@@ -681,19 +681,19 @@
   </div>
 </div>
 
-<!-- Dedicated Payment Modal (Strictly only 'Change Plan' & 'Cancel' Buttons) -->
+<!-- Dedicated Payment Modal (Strictly 'Change Plan' & 'Cancel' Buttons) -->
 <div id="qrPaymentModal" class="generic-modal">
   <div class="generic-modal-box">
     <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay via UPI</div>
     <h3 id="paymentModalPlanTitle" style="font-size: 18px; color: #fff; margin-bottom: 4px;">Service Activation Payment</h3>
-    <div id="paymentModalAmountDisplay" style="font-size: 26px; font-weight: 800; color: #fbbf24; margin-bottom: 8px;">₹0</div>
-    <div style="font-size:11px; color:var(--accent-blue); margin-bottom:12px;">UPI ID: <strong>SPICED92849611072221935@yesbankltd</strong></div>
+    <div id="paymentModalAmountDisplay" style="font-size: 26px; font-weight: 800; color: #fbbf24; margin-bottom: 6px;">₹0</div>
+    <div style="font-size:11px; color:var(--accent-blue); margin-bottom:12px; word-break:break-all;">UPI ID: <strong>SPICED92849611072221935@yesbankltd</strong></div>
 
     <div style="background: #ffffff; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom:10px;">
-      <img id="portalQrCodeImage" style="width: 220px; height: 220px; display: block;" alt="Payment QR Code">
+      <img id="portalQrCodeImage" style="width: 210px; height: 210px; display: block;" alt="Payment QR Code">
     </div>
 
-    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">PhonePe, GPay, Paytm, BHIM UPI से स्कैन करके पेमेंट करें।</p>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">PhonePe, GPay, Paytm से स्कैन करके पेमेंट करें।</p>
 
     <!-- Strictly ONLY 'Change Plan' and 'Cancel' Buttons -->
     <div class="btn-group">
@@ -703,7 +703,7 @@
   </div>
 </div>
 
-<!-- 4. Main Portal Application (Accessible only after validation) -->
+<!-- 4. Main Portal Application -->
 <div id="mainApp">
   <div class="tab-nav">
     <button class="tab-btn active" onclick="switchTab('tab-cards')">💳 ID Card (5 Slots)</button>
@@ -1228,7 +1228,7 @@
     const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
 
     if (daysRemaining <= 0) {
-      localStorage.removeItem('system_auth_pwd'); // Silently remove custom password
+      localStorage.removeItem('system_auth_pwd');
       return 0;
     }
     return daysRemaining;
@@ -1237,7 +1237,7 @@
   function getStoredPassword() {
     const remaining = checkAndHandleExpiry();
     if (remaining === 0) {
-      return EXPIRED_PASS; // Harshal@6195 silently applied
+      return EXPIRED_PASS;
     }
     return localStorage.getItem('system_auth_pwd') || INITIAL_PASS;
   }
@@ -1296,7 +1296,6 @@
     document.getElementById('paymentModalPlanTitle').innerText = selectedPlanTitle;
     document.getElementById('paymentModalAmountDisplay').innerText = `₹${selectedPlanAmount}`;
 
-    // Generate dynamic QR Code for SPICED92849611072221935@yesbankltd with exact amount
     const upiUri = `upi://pay?pa=${encodeURIComponent(MERCHANT_UPI_ID)}&pn=${encodeURIComponent("OnePlus Online Services")}&am=${selectedPlanAmount}&cu=INR&tn=${encodeURIComponent(selectedPlanTitle)}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUri)}`;
     
@@ -2827,7 +2826,7 @@
 
   // ==========================================================
   // TAB 9: INTERACTIVE PDF COMPRESSOR
-  // ==========================================
+  // ==========================================================
   let compressOriginalFile = null;
   let compressPdfDoc = null;
   let origFileSizeInKB = 0;
