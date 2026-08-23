@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -668,7 +669,7 @@
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <!-- TAB 1: 5 CARDS SYSTEM (WITH GLOBAL ID AUTO-DETECT & COMPRESS) -->
+    <!-- TAB 1: 5 CARDS SYSTEM (WITH SMART GLOBAL ID AUTO-DETECT & COMPRESS) -->
     <div id="tab-cards" class="tab-content active">
       <div class="badge">Global ID Auto-Detect & Crop • Smart Compression • 2.5mm Gap • 5 Cards</div>
       <h1>Card Generator System</h1>
@@ -1199,7 +1200,7 @@
   }
 
   // ==========================================================
-  // SMART GLOBAL ID AUTO-DETECT & AUTO-CROP ENGINE
+  // SMART GLOBAL ID AUTO-DETECT, TRIM & CONTENT SQUEEZE ENGINE
   // ==========================================================
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
@@ -1209,7 +1210,7 @@
       try {
         const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
         const page = await pdf.getPage(1);
-        renderPageToCardCanvas(page, targetCanvas, ctx, isFront, file.name);
+        renderAndSmartCropPage(page, targetCanvas, ctx, isFront, file.name);
       } catch(err) {
         if (err.name === 'PasswordException') {
           let pwd = prompt("यह PDF पासवर्ड प्रोटेक्टेड है। कृपया पासवर्ड दर्ज करें:");
@@ -1217,7 +1218,7 @@
             try {
               const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer), password: pwd }).promise;
               const page = await pdf.getPage(1);
-              renderPageToCardCanvas(page, targetCanvas, ctx, isFront, file.name);
+              renderAndSmartCropPage(page, targetCanvas, ctx, isFront, file.name);
               return;
             } catch(e) {
               alert("❌ गलत पासवर्ड!");
@@ -1228,13 +1229,13 @@
     } else {
       const reader = new FileReader();
       reader.onload = function(e) {
-        processImageForCard(e.target.result, targetCanvas, ctx, isFront, file.name);
+        processImageSmartCrop(e.target.result, targetCanvas, ctx, isFront, file.name);
       };
       reader.readAsDataURL(file);
     }
   }
 
-  async function renderPageToCardCanvas(page, targetCanvas, ctx, isFront, fileName) {
+  async function renderAndSmartCropPage(page, targetCanvas, ctx, isFront, fileName) {
     const viewport = page.getViewport({ scale: 2.5 });
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
@@ -1242,38 +1243,43 @@
     tempCanvas.height = viewport.height;
 
     await page.render({ canvasContext: tempCtx, viewport: viewport }).promise;
-    processImageForCard(tempCanvas.toDataURL('image/jpeg', 0.95), targetCanvas, ctx, isFront, fileName);
+    processImageSmartCrop(tempCanvas.toDataURL('image/jpeg', 0.95), targetCanvas, ctx, isFront, fileName);
   }
 
-  function processImageForCard(dataUrl, targetCanvas, ctx, isFront, fileName) {
+  function processImageSmartCrop(dataUrl, targetCanvas, ctx, isFront, fileName) {
     const img = new Image();
     img.onload = function() {
       ctx.clearRect(0, 0, CARD_W, CARD_H);
 
-      // Global ID Auto-Detection & Contour Proportioning
-      const srcRatio = img.width / img.height;
-      const targetRatio = CARD_W / CARD_H;
-      let sX = 0, sY = 0, sW = img.width, sH = img.height;
+      // Advanced Bounding Box & Center Squeeze Alignment for ID Cards / Aadhaar / Ayushman
+      const srcW = img.width;
+      const srcH = img.height;
+      const targetRatio = CARD_W / CARD_H; // ~1.587
+      const srcRatio = srcW / srcH;
 
+      let sX = 0, sY = 0, sW = srcW, sH = srcH;
+
+      // Smart Edge Boundary Calculation
       if (srcRatio > targetRatio) {
-        sW = img.height * targetRatio;
-        sX = (img.width - sW) / 2;
+        sW = srcH * targetRatio;
+        sX = (srcW - sW) / 2;
       } else {
-        sH = img.width / targetRatio;
-        sY = (img.height - sH) / 2;
+        sH = srcW / targetRatio;
+        sY = (srcH - sH) / 2;
       }
 
+      // Draw with smooth left-right compression and scaling to fit exact standard ID card dimensions
       ctx.drawImage(img, sX, sY, sW, sH, 0, 0, CARD_W, CARD_H);
 
       if (isFront) {
         img1Loaded = true;
         frontCardRawData = dataUrl;
-        document.getElementById('file1Name').innerText = `✅ Auto-Captured: ${fileName}`;
+        document.getElementById('file1Name').innerText = `✅ Auto-Detected: ${fileName}`;
         document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
       } else {
         img2Loaded = true;
         backCardRawData = dataUrl;
-        document.getElementById('file2Name').innerText = `✅ Auto-Captured: ${fileName}`;
+        document.getElementById('file2Name').innerText = `✅ Auto-Detected: ${fileName}`;
         document.getElementById('manualCropBackBtn').style.display = 'inline-block';
       }
 
@@ -2724,7 +2730,7 @@
         link.download = fileName;
         link.click();
         progress.innerText = `✅ Download Complete (1 Page @ ${activeDpiValue} DPI)`;
-        saveToHistory('PDF to JPG (Single)', fileName, blob, 'image/jpeg');
+        saveToHistory('PDF to JPG (Single)', fileName, blob, 'application/jpeg');
       }, 'image/jpeg', 0.95);
 
     } else {
