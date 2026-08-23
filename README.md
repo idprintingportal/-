@@ -681,7 +681,7 @@
   </div>
 </div>
 
-<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan', 'Cancel' & 'Payment Done' Buttons) -->
+<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan', 'Cancel' & Direct UPI App Button) -->
 <div id="qrPaymentModal" class="generic-modal">
   <div class="generic-modal-box">
     <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay via UPI</div>
@@ -693,11 +693,16 @@
       <img id="portalQrCodeImage" style="width: 210px; height: 210px; display: block;" alt="Payment QR Code">
     </div>
 
-    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">PhonePe, GPay, Paytm से स्कैन करके पेमेंट करें। पेमेंट होने के बाद नीचे <strong>'Payment Done'</strong> बटन दबाएं।</p>
+    <!-- Direct UPI App Intent Link button for seamless payment redirect -->
+    <div style="margin-bottom: 12px;">
+      <a id="upiIntentLink" href="#" class="action-btn btn-download" style="display:block; text-decoration:none; padding:11px; text-align:center;">📱 Tap to Pay via GPay / PhonePe / Paytm</a>
+    </div>
 
-    <!-- Payment Done Button + Change Plan + Cancel Buttons -->
+    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">पेमेंट पूरा करने के बाद नीचे <strong>'Payment Done (Login Now)'</strong> बटन दबाएं।</p>
+
+    <!-- Strictly ONLY 'Payment Done', 'Change Plan' and 'Cancel' Buttons -->
     <div class="btn-group" style="flex-direction:column; gap:8px;">
-      <button class="action-btn btn-download" style="width:100%; padding:11px;" onclick="simulatePaymentSuccess()">✅ Payment Done (Redirect to Login)</button>
+      <button class="action-btn btn-download" style="width:100%; padding:11px; background: linear-gradient(135deg, #2563eb 100%, #1d4ed8 100%);" onclick="simulatePaymentSuccess()">✅ Payment Done (Login Now)</button>
       <div style="display:flex; gap:8px; width:100%;">
         <button class="action-btn btn-add" style="flex:1; padding:9px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
         <button class="action-btn btn-reset" style="flex:1; padding:9px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
@@ -1293,6 +1298,7 @@
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUri)}`;
     
     document.getElementById('portalQrCodeImage').src = qrUrl;
+    document.getElementById('upiIntentLink').href = upiUri;
     document.getElementById('planSelectionScreen').style.display = 'none';
     document.getElementById('qrPaymentModal').classList.add('active-modal');
   }
@@ -1557,15 +1563,15 @@
     const activePass = localStorage.getItem('system_auth_pwd') || DEFAULT_PASS;
 
     if (inputEmail === AUTH_EMAIL.toLowerCase() && inputPass === activePass) {
-      sessionStorage.setItem('isLoggedIn', 'true');
       loginScreen.style.display = 'none';
       changePwdScreen.style.display = 'none';
       errorMsg.style.display = 'none';
 
       const remainingDays = checkAndHandleExpiry();
 
-      // Agar valid plan active hai toh seedha app khulegi, warna plan/payment screen aayegi
+      // Agar pehle se valid plan active hai toh seedha app khulegi, warna plan/payment screen aayegi
       if (remainingDays !== null && remainingDays > 0) {
+        sessionStorage.setItem('isLoggedIn', 'true');
         mainApp.style.display = 'block';
         updateValidityDisplay();
         initAllCanvases();
