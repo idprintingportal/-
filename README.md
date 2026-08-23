@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -539,7 +540,20 @@
       cursor: pointer;
       font-size: 11px;
       font-weight: 600;
+      margin-right: 4px;
     }
+
+    .history-delete-btn {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .history-delete-btn:hover { background: rgba(239, 68, 68, 0.4); }
 
     /* Modal System */
     .generic-modal {
@@ -1076,7 +1090,7 @@
       <h1 id="historyHeaderTitle">60-Day Print & Download History</h1>
       <p id="historyDescText" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">आपके द्वारा डाउनलोड की गई सभी फाइल्स यहाँ सुरक्षित हैं।</p>
 
-      <div style="text-align: right; margin-bottom: 10px;">
+      <div style="text-align: right; margin-bottom: 10px; display:flex; justify-content:flex-end; gap:10px;">
         <button onclick="clearAllHistoryDB()" class="action-btn btn-reset" style="padding: 6px 14px; font-size: 11px;">🗑️ Clear Entire History Now</button>
       </div>
 
@@ -1169,7 +1183,7 @@
   }
 
   // ==========================================================
-  // INDEXEDDB 60-DAY HISTORY STORAGE ENGINE
+  // INDEXEDDB 60-DAY HISTORY STORAGE & INDIVIDUAL DELETE ENGINE
   // ==========================================================
   const DB_NAME = 'PrintPortal60DayDB';
   const DB_STORE = 'print_records';
@@ -1257,7 +1271,10 @@
             <td><strong style="color:var(--accent-blue);">${rec.feature}</strong></td>
             <td>${rec.fileName}</td>
             <td style="color:#94a3b8; font-size:11px;">${rec.dateFormatted}</td>
-            <td><button class="history-download-btn" onclick="reDownloadHistoryFile(${rec.id})">📥 Download</button></td>
+            <td>
+              <button class="history-download-btn" onclick="reDownloadHistoryFile(${rec.id})">📥 Download</button>
+              <button class="history-delete-btn" onclick="deleteHistoryItem(${rec.id})">🗑️ Delete</button>
+            </td>
           `;
           tbody.appendChild(tr);
         });
@@ -1284,6 +1301,19 @@
       link.download = rec.fileName;
       link.click();
     };
+  }
+
+  async function deleteHistoryItem(recordId) {
+    if (!confirm('क्या आप इस फाइल को हिस्ट्री से हटाना चाहते हैं?')) return;
+    try {
+      const db = await openHistoryDB();
+      const tx = db.transaction(DB_STORE, 'readwrite');
+      const store = tx.objectStore(DB_STORE);
+      store.delete(recordId);
+      tx.oncomplete = () => renderHistoryTable();
+    } catch(err) {
+      console.error("Delete error:", err);
+    }
   }
 
   async function clearAllHistoryDB() {
