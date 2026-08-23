@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -647,20 +648,20 @@
   <h2 style="font-size: 20px; margin-bottom: 6px;">⚡ Select Your Access Plan</h2>
   <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">पोर्टल में प्रवेश करने के लिए अपना प्लान चुनें:</p>
 
-  <!-- Monthly Plan Card (30 Days) -->
-  <div class="plan-card" onclick="promptPlanConfirmation(79, 'Monthly Plan (30 Days Validity + 30 Days History)', 30)">
+  <!-- Monthly Plan Card (₹1 / 30 Days) -->
+  <div class="plan-card" onclick="promptPlanConfirmation(1, 'Monthly Plan (30 Days Validity + 30 Days History)', 30)">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
       <strong style="color:#fff; font-size:15px;">🗓️ Monthly Pack</strong>
-      <span style="font-size:18px; font-weight:800; color:#38bdf8;">₹79 <small style="font-size:11px; color:#94a3b8;">/ Month</small></span>
+      <span style="font-size:18px; font-weight:800; color:#38bdf8;">₹1 <small style="font-size:11px; color:#94a3b8;">/ Month</small></span>
     </div>
     <div style="font-size:12px; color:#94a3b8;">• 30 Days Portal Access<br>• <strong>30-Day</strong> Print History Retention</div>
   </div>
 
-  <!-- Yearly Plan Card (365 Days) -->
-  <div class="plan-card" style="border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.05);" onclick="promptPlanConfirmation(899, 'Yearly Super Saver (365 Days Validity + 365 Days History)', 365)">
+  <!-- Yearly Plan Card (₹2 / 365 Days) -->
+  <div class="plan-card" style="border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.05);" onclick="promptPlanConfirmation(2, 'Yearly Super Saver (365 Days Validity + 365 Days History)', 365)">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
       <strong style="color:#fbbf24; font-size:15px;">👑 Yearly Super Saver</strong>
-      <span style="font-size:18px; font-weight:800; color:#fbbf24;">₹899 <small style="font-size:11px; color:#94a3b8;">/ Year</small></span>
+      <span style="font-size:18px; font-weight:800; color:#fbbf24;">₹2 <small style="font-size:11px; color:#94a3b8;">/ Year</small></span>
     </div>
     <div style="font-size:12px; color:#94a3b8;">• 365 Days Uninterrupted Access<br>• <strong>365-Day (1 Year)</strong> Full History Retention</div>
   </div>
@@ -1263,7 +1264,7 @@
   // ==========================================================
   // MANDATORY PAYWALL & PAYMENT FLOW
   // ==========================================================
-  let selectedPlanAmount = 79;
+  let selectedPlanAmount = 1;
   let selectedPlanTitle = '';
   let selectedPlanDays = 30;
 
@@ -1494,8 +1495,9 @@
     const oldP = oldPassInput.value.trim();
     const newP = newPassInput.value.trim();
     const confP = confirmPassInput.value.trim();
+    const activePass = localStorage.getItem('system_auth_pwd') || DEFAULT_PASS;
 
-    if (oldP !== DEFAULT_PASS) {
+    if (oldP !== activePass) {
       pwdStatusMsg.innerText = "❌ पुराना पासवर्ड गलत है!";
       pwdStatusMsg.style.color = "#ef4444";
       pwdStatusMsg.style.display = "block";
@@ -1539,16 +1541,8 @@
       changePwdScreen.style.display = 'none';
       errorMsg.style.display = 'none';
 
-      const remainingDays = checkAndHandleExpiry();
-
-      if (remainingDays !== null && remainingDays > 0) {
-        mainApp.style.display = 'block';
-        updateValidityDisplay();
-        initAllCanvases();
-        cleanupOldHistoryRecords();
-      } else {
-        document.getElementById('planSelectionScreen').style.display = 'block';
-      }
+      // Always show Plan Selection screen immediately after login as requested
+      document.getElementById('planSelectionScreen').style.display = 'block';
     } else {
       errorMsg.style.display = 'block';
     }
