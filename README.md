@@ -668,11 +668,11 @@
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <!-- TAB 1: 5 CARDS SYSTEM (WITH SMART GLOBAL ID AUTO-DETECT & COMPRESS) -->
+    <!-- TAB 1: 5 CARDS SYSTEM (WITH GLOBAL ID AUTO-DETECT & COMPRESS) -->
     <div id="tab-cards" class="tab-content active">
       <div class="badge">Global ID Auto-Detect & Crop • Smart Compression • 2.5mm Gap • 5 Cards</div>
       <h1>Card Generator System</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">आधार कार्ड, पैन कार्ड, आयुष्मान कार्ड या दुनिया का कोई भी आईडी कार्ड (PDF या Image) अपलोड करें — पोर्टल स्वतः उसे डिटेक्ट, क्रॉप और कंप्रेस कर देगा।</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">दुनिया का कोई भी आईडी कार्ड (Aadhaar, PAN, Ayushman, Voter ID, Driver License आदि) PDF या Image रूप में अपलोड करें — पोर्टल स्वतः उसे डिटेक्ट, क्रॉप और कंप्रेस कर देगा।</p>
       
       <div id="slotCounter" class="slot-counter-badge">Cards on Page: 0 / 5 (Next Slot: #1)</div>
 
@@ -1009,11 +1009,11 @@
       </div>
     </div>
 
-    <!-- TAB 8: PDF TO HIGH-DPI JPG CONVERTER -->
+    <!-- TAB 8: PDF TO HIGH-DPI JPG CONVERTER (WITH PASSWORD UNLOCK FEATURE) -->
     <div id="tab-pdf-to-jpg" class="tab-content">
-      <div class="badge">Ultra High-Res • Manual & Quick DPI (72 to 1200 DPI) • Batch ZIP Export</div>
+      <div class="badge">Password Unlock • Ultra High-Res • Manual & Quick DPI • Batch ZIP Export</div>
       <h1>PDF to High-DPI JPG Converter</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">PDF फ़ाइल अपलोड करें और अपनी आवश्यकतानुसार DPI रिज़ॉल्यूशन टाइप या सेलेक्ट करें।</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">PDF फ़ाइल अपलोड करें। यदि PDF पासवर्ड प्रोटेक्टेड है, तो पासवर्ड दर्ज करके अनलॉक करें।</p>
 
       <div class="upload-section" style="margin-bottom: 15px;">
         <label class="upload-box" for="pdfToJpgInput" style="max-width: 420px;">
@@ -1021,6 +1021,16 @@
           <div id="pdfToJpgStatus" style="font-size: 12px; color: var(--text-muted);">क्लिक करके .pdf फाइल चुनें</div>
         </label>
         <input type="file" id="pdfToJpgInput" accept="application/pdf">
+      </div>
+
+      <!-- Password Input Box for Protected PDFs -->
+      <div id="pdfPasswordBox" style="display:none; max-width: 400px; margin: 15px auto; background: rgba(3, 7, 18, 0.8); padding: 15px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.4);">
+        <div style="font-size: 12px; color: #f87171; font-weight: 600; margin-bottom: 6px;">🔒 Protected PDF Detected! Enter Password:</div>
+        <div style="display:flex; gap:8px;">
+          <input type="password" id="pdfPasswordInput" class="text-field-input" style="max-width:100%; margin:0;" placeholder="PDF Password">
+          <button class="action-btn btn-add" style="padding: 8px 14px; font-size:12px;" onclick="unlockAndLoadProtectedPdf()">🔓 Unlock</button>
+        </div>
+        <div id="pdfPasswordError" style="font-size: 11px; color: #ef4444; margin-top: 6px; display:none;">⚠️ गलत पासवर्ड! कृपया पुनः प्रयास करें।</div>
       </div>
 
       <div id="pdfToJpgControls" style="display:none;">
@@ -1189,24 +1199,32 @@
   }
 
   // ==========================================================
-  // SMART AUTO-DETECT & AUTO-CROP ENGINE FOR GLOBAL IDS / AADHAAR
+  // SMART GLOBAL ID AUTO-DETECT & AUTO-CROP ENGINE
   // ==========================================================
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
 
     if (file.type === 'application/pdf') {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-      const page = await pdf.getPage(1);
-      const viewport = page.getViewport({ scale: 2.0 });
-
-      const tempCanvas = document.createElement('canvas');
-      const tempCtx = tempCanvas.getContext('2d');
-      tempCanvas.width = viewport.width;
-      tempCanvas.height = viewport.height;
-
-      await page.render({ canvasContext: tempCtx, viewport: viewport }).promise;
-      processImageForCard(tempCanvas.toDataURL('image/jpeg', 0.95), targetCanvas, ctx, isFront, file.name);
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+        const page = await pdf.getPage(1);
+        renderPageToCardCanvas(page, targetCanvas, ctx, isFront, file.name);
+      } catch(err) {
+        if (err.name === 'PasswordException') {
+          let pwd = prompt("यह PDF पासवर्ड प्रोटेक्टेड है। कृपया पासवर्ड दर्ज करें:");
+          if (pwd) {
+            try {
+              const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer), password: pwd }).promise;
+              const page = await pdf.getPage(1);
+              renderPageToCardCanvas(page, targetCanvas, ctx, isFront, file.name);
+              return;
+            } catch(e) {
+              alert("❌ गलत पासवर्ड!");
+            }
+          }
+        }
+      }
     } else {
       const reader = new FileReader();
       reader.onload = function(e) {
@@ -1216,12 +1234,23 @@
     }
   }
 
+  async function renderPageToCardCanvas(page, targetCanvas, ctx, isFront, fileName) {
+    const viewport = page.getViewport({ scale: 2.5 });
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCanvas.width = viewport.width;
+    tempCanvas.height = viewport.height;
+
+    await page.render({ canvasContext: tempCtx, viewport: viewport }).promise;
+    processImageForCard(tempCanvas.toDataURL('image/jpeg', 0.95), targetCanvas, ctx, isFront, fileName);
+  }
+
   function processImageForCard(dataUrl, targetCanvas, ctx, isFront, fileName) {
     const img = new Image();
     img.onload = function() {
       ctx.clearRect(0, 0, CARD_W, CARD_H);
 
-      // Smart Auto-Crop & Compress to standard ID card dimension (1013 x 638)
+      // Global ID Auto-Detection & Contour Proportioning
       const srcRatio = img.width / img.height;
       const targetRatio = CARD_W / CARD_H;
       let sX = 0, sY = 0, sW = img.width, sH = img.height;
@@ -1239,12 +1268,12 @@
       if (isFront) {
         img1Loaded = true;
         frontCardRawData = dataUrl;
-        document.getElementById('file1Name').innerText = `✅ Auto-Fitted: ${fileName}`;
+        document.getElementById('file1Name').innerText = `✅ Auto-Captured: ${fileName}`;
         document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
       } else {
         img2Loaded = true;
         backCardRawData = dataUrl;
-        document.getElementById('file2Name').innerText = `✅ Auto-Fitted: ${fileName}`;
+        document.getElementById('file2Name').innerText = `✅ Auto-Captured: ${fileName}`;
         document.getElementById('manualCropBackBtn').style.display = 'inline-block';
       }
 
@@ -2614,10 +2643,11 @@
   });
 
   // ==========================================================
-  // TAB 8: PDF TO HIGH-DPI JPG (MANUAL & BUTTON DPI)
+  // TAB 8: PDF TO HIGH-DPI JPG (WITH PASSWORD UNLOCK FEATURE)
   // ==========================================================
   let pdfToJpgDoc = null;
   let activeDpiValue = 300;
+  let activeProtectedArrayBuffer = null;
 
   function setPdfDpi(dpi) {
     activeDpiValue = dpi;
@@ -2638,11 +2668,35 @@
     if (!file) return;
 
     document.getElementById('pdfToJpgStatus').innerText = `✅ ${file.name}`;
-    const arrayBuffer = await file.arrayBuffer();
+    activeProtectedArrayBuffer = await file.arrayBuffer();
 
-    pdfToJpgDoc = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-    document.getElementById('pdfToJpgControls').style.display = 'block';
+    try {
+      pdfToJpgDoc = await pdfjsLib.getDocument({ data: new Uint8Array(activeProtectedArrayBuffer) }).promise;
+      document.getElementById('pdfPasswordBox').style.display = 'none';
+      document.getElementById('pdfToJpgControls').style.display = 'block';
+    } catch(err) {
+      if (err.name === 'PasswordException') {
+        document.getElementById('pdfPasswordBox').style.display = 'block';
+        document.getElementById('pdfToJpgControls').style.display = 'none';
+        document.getElementById('pdfPasswordInput').value = '';
+        document.getElementById('pdfPasswordError').style.display = 'none';
+      }
+    }
   });
+
+  async function unlockAndLoadProtectedPdf() {
+    const pwd = document.getElementById('pdfPasswordInput').value.trim();
+    if (!pwd) return;
+
+    try {
+      pdfToJpgDoc = await pdfjsLib.getDocument({ data: new Uint8Array(activeProtectedArrayBuffer), password: pwd }).promise;
+      document.getElementById('pdfPasswordBox').style.display = 'none';
+      document.getElementById('pdfToJpgControls').style.display = 'block';
+      document.getElementById('pdfPasswordError').style.display = 'none';
+    } catch(e) {
+      document.getElementById('pdfPasswordError').style.display = 'block';
+    }
+  }
 
   document.getElementById('startPdfToJpgBtn').addEventListener('click', async () => {
     if (!pdfToJpgDoc) return;
