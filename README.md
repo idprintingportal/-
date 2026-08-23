@@ -1321,6 +1321,24 @@
     loginPass.value = '';
   }
 
+  // Simulated Payment Completion Handler (Triggered after successful payment simulation or verification)
+  window.simulatePaymentSuccess = function() {
+    const currentExp = getActiveValidityExpiryTime() || Date.now();
+    const baseTime = Math.max(Date.now(), currentExp);
+    const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
+
+    localStorage.setItem('system_plan_expiry_time', newExpTime.toString());
+    localStorage.setItem('system_active_plan_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
+
+    document.getElementById('qrPaymentModal').classList.remove('active-modal');
+    document.getElementById('planSelectionScreen').style.display = 'none';
+    mainApp.style.display = 'block';
+
+    updateValidityDisplay();
+    initAllCanvases();
+    cleanupOldHistoryRecords();
+  };
+
   // ==========================================================
   // INDEXEDDB DYNAMIC STORAGE ENGINE
   // ==========================================================
@@ -1553,7 +1571,6 @@
 
       const remainingDays = checkAndHandleExpiry();
 
-      // If active plan already exists and is valid, enter directly; otherwise force plan selection
       if (remainingDays !== null && remainingDays > 0) {
         mainApp.style.display = 'block';
         updateValidityDisplay();
