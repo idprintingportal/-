@@ -669,23 +669,23 @@
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <!-- TAB 1: 5 CARDS SYSTEM (WITH SMART GLOBAL ID AUTO-DETECT & COMPRESS) -->
+    <!-- TAB 1: 5 CARDS SYSTEM (WITH MANUAL CROPPER FOR PERFECT FIT) -->
     <div id="tab-cards" class="tab-content active">
-      <div class="badge">Global ID Auto-Detect & Crop • Smart Compression • 2.5mm Gap • 5 Cards</div>
+      <div class="badge">Manual Precision Crop • Exact 1013×638 Fit • 2.5mm Gap • 5 Cards</div>
       <h1>Card Generator System</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">दुनिया का कोई भी आईडी कार्ड (Aadhaar, PAN, Ayushman, Voter ID, Driver License आदि) PDF या Image रूप में अपलोड करें — पोर्टल स्वतः उसे डिटेक्ट, क्रॉप और कंप्रेस कर देगा।</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">कोई भी PDF या Image अपलोड करें। फाइल लोड होने पर **Manual Crop Box** खुलेगा, जिससे आप आईडी के सही हिस्से को सेलेक्ट करके परफेक्ट साइज में सेट कर सकते हैं।</p>
       
       <div id="slotCounter" class="slot-counter-badge">Cards on Page: 0 / 5 (Next Slot: #1)</div>
 
       <div class="upload-section">
         <label class="upload-box" for="card1Input">
-          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Front Side (Auto-Detect)</strong>
+          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Front Side (Upload & Crop)</strong>
           <div id="file1Name" style="font-size: 12px; color: var(--text-muted);">इमेज या PDF चुनें</div>
         </label>
         <input type="file" id="card1Input" accept="image/*,application/pdf">
 
         <label class="upload-box" for="card2Input">
-          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Back Side (Auto-Detect)</strong>
+          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Back Side (Upload & Crop)</strong>
           <div id="file2Name" style="font-size: 12px; color: var(--text-muted);">इमेज या PDF चुनें</div>
         </label>
         <input type="file" id="card2Input" accept="image/*,application/pdf">
@@ -695,12 +695,12 @@
         <div class="preview-box">
           <h4>Front Card Preview</h4>
           <canvas id="canvas1" width="1013" height="638" style="width: 180px;"></canvas>
-          <button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Fine Crop Front</button>
+          <button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Recrop Front</button>
         </div>
         <div class="preview-box">
           <h4>Back Card Preview</h4>
           <canvas id="canvas2" width="1013" height="638" style="width: 180px;"></canvas>
-          <button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Fine Crop Back</button>
+          <button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Recrop Back</button>
         </div>
       </div>
 
@@ -934,7 +934,7 @@
       <div class="upload-section" style="margin-bottom: 15px;">
         <label class="upload-box" for="universalMultiInput" style="max-width: 450px;">
           <strong style="display:block; font-size:14px; margin-bottom:4px; color:var(--accent-blue);">📁 Select Files (PDF, JPG, PNG Allowed)</strong>
-          <div id="universalMultiStatus" style="font-size: 12px; color: var(--text-muted);">क्लिक करके PDF या इमेज फ़ाइलें चुनें</div>
+          <div id="universalMultiStatus" style="font-size: 12px; color: var(--text-muted);">क्लिक करके PDF या इमेज फाइलें चुनें</div>
         </label>
         <input type="file" id="universalMultiInput" accept="image/jpeg,image/png,image/jpg,application/pdf" multiple>
       </div>
@@ -1136,15 +1136,15 @@
   </div>
 </div>
 
-<!-- Global Crop Modal -->
+<!-- Global Crop Modal (Interactive Manual Box to fine-tune any card selection) -->
 <div id="cropModal" class="generic-modal">
   <div class="generic-modal-box" style="max-width: 90vw; padding: 20px;">
-    <div id="cropModalTitle" style="color:#fff; margin-bottom: 10px; font-weight: 600;">कार्ड/फ़ोटो का सही हिस्सा सेलेक्ट (Crop) करें:</div>
+    <div id="cropModalTitle" style="color:#fff; margin-bottom: 10px; font-weight: 600;">आईडी कार्ड का सही हिस्सा सेलेक्ट (Crop) करें:</div>
     <div class="crop-wrapper">
       <img id="imageToCrop" src="">
     </div>
     <div class="btn-group">
-      <button id="cropSaveBtn" class="action-btn btn-download">✂️ Crop & Set</button>
+      <button id="cropSaveBtn" class="action-btn btn-download">✂️ Crop & Set to ID Size</button>
       <button id="cropCancelBtn" class="action-btn" style="background:#ef4444;">रद्द करें</button>
     </div>
   </div>
@@ -1200,7 +1200,7 @@
   }
 
   // ==========================================================
-  // SMART GLOBAL ID AUTO-DETECT, TRIM & CONTENT SQUEEZE ENGINE
+  // SMART MANUAL / AUTO-CROP & FIT ENGINE
   // ==========================================================
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
@@ -1209,8 +1209,12 @@
       const arrayBuffer = await file.arrayBuffer();
       try {
         const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-        const page = await pdf.getPage(1);
-        renderAndSmartCropPage(page, targetCanvas, ctx, isFront, file.name);
+        let pageNum = 1;
+        if (!isFront && pdf.numPages > 1) {
+          pageNum = 2; // Auto-select page 2 for back side if available
+        }
+        const page = await pdf.getPage(pageNum);
+        renderAndOpenCropper(page, targetCanvas, ctx, isFront, file.name);
       } catch(err) {
         if (err.name === 'PasswordException') {
           let pwd = prompt("यह PDF पासवर्ड प्रोटेक्टेड है। कृपया पासवर्ड दर्ज करें:");
@@ -1218,7 +1222,7 @@
             try {
               const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer), password: pwd }).promise;
               const page = await pdf.getPage(1);
-              renderAndSmartCropPage(page, targetCanvas, ctx, isFront, file.name);
+              renderAndOpenCropper(page, targetCanvas, ctx, isFront, file.name);
               return;
             } catch(e) {
               alert("❌ गलत पासवर्ड!");
@@ -1229,13 +1233,15 @@
     } else {
       const reader = new FileReader();
       reader.onload = function(e) {
-        processImageSmartCrop(e.target.result, targetCanvas, ctx, isFront, file.name);
+        openCropEngine(e.target.result, isFront ? 'card_front' : 'card_back');
+        if (isFront) frontCardRawData = e.target.result;
+        else backCardRawData = e.target.result;
       };
       reader.readAsDataURL(file);
     }
   }
 
-  async function renderAndSmartCropPage(page, targetCanvas, ctx, isFront, fileName) {
+  async function renderAndOpenCropper(page, targetCanvas, ctx, isFront, fileName) {
     const viewport = page.getViewport({ scale: 2.5 });
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
@@ -1243,51 +1249,12 @@
     tempCanvas.height = viewport.height;
 
     await page.render({ canvasContext: tempCtx, viewport: viewport }).promise;
-    processImageSmartCrop(tempCanvas.toDataURL('image/jpeg', 0.95), targetCanvas, ctx, isFront, fileName);
-  }
+    const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.98);
 
-  function processImageSmartCrop(dataUrl, targetCanvas, ctx, isFront, fileName) {
-    const img = new Image();
-    img.onload = function() {
-      ctx.clearRect(0, 0, CARD_W, CARD_H);
+    if (isFront) frontCardRawData = dataUrl;
+    else backCardRawData = dataUrl;
 
-      // Advanced Bounding Box & Center Squeeze Alignment for ID Cards / Aadhaar / Ayushman
-      const srcW = img.width;
-      const srcH = img.height;
-      const targetRatio = CARD_W / CARD_H; // ~1.587
-      const srcRatio = srcW / srcH;
-
-      let sX = 0, sY = 0, sW = srcW, sH = srcH;
-
-      // Smart Edge Boundary Calculation
-      if (srcRatio > targetRatio) {
-        sW = srcH * targetRatio;
-        sX = (srcW - sW) / 2;
-      } else {
-        sH = srcW / targetRatio;
-        sY = (srcH - sH) / 2;
-      }
-
-      // Draw with smooth left-right compression and scaling to fit exact standard ID card dimensions
-      ctx.drawImage(img, sX, sY, sW, sH, 0, 0, CARD_W, CARD_H);
-
-      if (isFront) {
-        img1Loaded = true;
-        frontCardRawData = dataUrl;
-        document.getElementById('file1Name').innerText = `✅ Auto-Detected: ${fileName}`;
-        document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
-      } else {
-        img2Loaded = true;
-        backCardRawData = dataUrl;
-        document.getElementById('file2Name').innerText = `✅ Auto-Detected: ${fileName}`;
-        document.getElementById('manualCropBackBtn').style.display = 'inline-block';
-      }
-
-      if (img1Loaded && img2Loaded) {
-        addCardBtn.disabled = false;
-      }
-    };
-    img.src = dataUrl;
+    openCropEngine(dataUrl, isFront ? 'card_front' : 'card_back');
   }
 
   // ==========================================================
@@ -1591,7 +1558,7 @@
       cropper = new Cropper(imageToCrop, {
         aspectRatio: targetRatio,
         viewMode: 1,
-        autoCropArea: 0.98
+        autoCropArea: 0.95
       });
     };
 
@@ -1623,10 +1590,14 @@
         ctx1.clearRect(0, 0, CARD_W, CARD_H);
         ctx1.drawImage(croppedCanvas, 0, 0);
         img1Loaded = true;
+        document.getElementById('file1Name').innerText = `✅ Manually Cropped & Fitted`;
+        document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
       } else {
         ctx2.clearRect(0, 0, CARD_W, CARD_H);
         ctx2.drawImage(croppedCanvas, 0, 0);
         img2Loaded = true;
+        document.getElementById('file2Name').innerText = `✅ Manually Cropped & Fitted`;
+        document.getElementById('manualCropBackBtn').style.display = 'inline-block';
       }
       if (img1Loaded && img2Loaded) addCardBtn.disabled = false;
     } 
