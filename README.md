@@ -198,6 +198,26 @@
     }
     .logout-btn:hover { background: rgba(239, 68, 68, 0.4); }
 
+    .btn-extend-service {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+      color: #fff;
+      border: none;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-extend-service:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.7);
+    }
+
     h1 { 
       background: linear-gradient(to right, #38bdf8, #a855f7, #ec4899);
       -webkit-background-clip: text;
@@ -648,16 +668,16 @@
   <h2 style="font-size: 20px; margin-bottom: 6px;">⚡ Select Your Access Plan</h2>
   <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">पोर्टल में प्रवेश करने के लिए अपना प्लान चुनें:</p>
 
-  <!-- Monthly Plan Card -->
+  <!-- Monthly Plan Card (30 Days) -->
   <div class="plan-card" onclick="promptPlanConfirmation(79, 'Monthly Plan (30 Days Validity + 30 Days History)', 30)">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
       <strong style="color:#fff; font-size:15px;">🗓️ Monthly Pack</strong>
       <span style="font-size:18px; font-weight:800; color:#38bdf8;">₹79 <small style="font-size:11px; color:#94a3b8;">/ Month</small></span>
     </div>
-    <div style="font-size:12px; color:#94a3b8;">• 30 Days Full Portal Access<br>• <strong>30-Day</strong> Print History Retention</div>
+    <div style="font-size:12px; color:#94a3b8;">• 30 Days Portal Access<br>• <strong>30-Day</strong> Print History Retention</div>
   </div>
 
-  <!-- Yearly Plan Card -->
+  <!-- Yearly Plan Card (365 Days) -->
   <div class="plan-card" style="border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.05);" onclick="promptPlanConfirmation(899, 'Yearly Super Saver (365 Days Validity + 365 Days History)', 365)">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
       <strong style="color:#fbbf24; font-size:15px;">👑 Yearly Super Saver</strong>
@@ -681,7 +701,7 @@
   </div>
 </div>
 
-<!-- Dedicated Payment Modal (Strictly 'Change Plan' & 'Cancel' Buttons) -->
+<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan' and 'Cancel' Buttons) -->
 <div id="qrPaymentModal" class="generic-modal">
   <div class="generic-modal-box">
     <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay via UPI</div>
@@ -1967,9 +1987,9 @@
     saveToHistory('Passport Photos', fileName, blob, 'application/pdf');
   });
 
-  // ==========================================================
+  // ==========================================
   // TAB 3: NAME & DATE PASSPORT (3 FONT SLIDERS)
-  // ==========================================================
+  // ==========================================
   const namePassportCanvas = document.getElementById('namePassportCanvas');
   const namePassportCtx = namePassportCanvas.getContext('2d');
   const namePassportSheetCanvas = document.getElementById('namePassportSheetCanvas');
