@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -669,11 +668,11 @@
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <!-- TAB 1: 5 CARDS SYSTEM (FULLY MANUAL 4-WAY & CORNER CROPPING) -->
+    <!-- TAB 1: 5 CARDS SYSTEM -->
     <div id="tab-cards" class="tab-content active">
-      <div class="badge">Fully Manual Precision Cropper • Exact 1013×638 Fit • 2.5mm Gap • 5 Cards</div>
+      <div class="badge">Manual Precision Cropper • Exact 1013×638 Fit • 2.5mm Gap • 5 Cards</div>
       <h1>Card Generator System</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">इमेज या PDF अपलोड करें। फाइल आते ही **Manual Crop Box** खुलेगा जहाँ से आप चारों कोनों और साइड्स को अपनी मर्जी से सेट करके बिल्कुल सटीक 1013×638 साइज में ला सकते हैं।</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">इमेज या PDF चुनें। फाइल अपलोड होते ही क्रॉप विंडो खुलेगी जहाँ से आप बिल्कुल सटीक हिस्सा चुनकर 1013×638 साइज में सेट कर सकते हैं।</p>
       
       <div id="slotCounter" class="slot-counter-badge">Cards on Page: 0 / 5 (Next Slot: #1)</div>
 
@@ -1200,7 +1199,7 @@
   }
 
   // ==========================================================
-  // FIXED ROBUST FILE UPLOAD & MANUAL CROP BRIDGE
+  // 100% FIXED SECURE FILE & CROPPING BRIDGE
   // ==========================================================
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
@@ -1259,7 +1258,7 @@
   }
 
   // ==========================================================
-  // INDEXEDDB 60-DAY HISTORY STORAGE & INDIVIDUAL DELETE ENGINE
+  // PERMANENT INDEXEDDB 60-DAY HISTORY STORAGE ENGINE
   // ==========================================================
   const DB_NAME = 'PrintPortal60DayDB';
   const DB_STORE = 'print_records';
@@ -1394,10 +1393,12 @@
 
   async function clearAllHistoryDB() {
     if (!confirm('क्या आप सभी इतिहास रिकॉर्ड्स तुरंत मिटाना चाहते हैं?')) return;
-    const db = await openHistoryDB();
-    const tx = db.transaction(DB_STORE, 'readwrite');
-    tx.objectStore(DB_STORE).clear();
-    tx.oncomplete = () => renderHistoryTable();
+    try {
+      const db = await openHistoryDB();
+      const tx = db.transaction(DB_STORE, 'readwrite');
+      tx.objectStore(DB_STORE).clear();
+      tx.oncomplete = () => renderHistoryTable();
+    } catch(err) {}
   }
 
   function switchTab(tabId) {
@@ -1431,12 +1432,6 @@
   const pwdStatusMsg = document.getElementById('pwdStatusMsg');
 
   sessionStorage.removeItem('isLoggedIn');
-
-  const today = new Date();
-  const curDay = String(today.getDate()).padStart(2, '0');
-  const curMonth = String(today.getMonth() + 1).padStart(2, '0');
-  const curYear = today.getFullYear();
-  document.getElementById('candDopInput').value = `DOP: ${curDay}/${curMonth}/${curYear}`;
 
   goToChangePwd.addEventListener('click', () => {
     loginScreen.style.display = 'none';
