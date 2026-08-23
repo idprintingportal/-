@@ -681,7 +681,7 @@
   </div>
 </div>
 
-<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan', 'Cancel' & Direct UPI App Button) -->
+<!-- Dedicated Payment Modal (Strictly ONLY 'Change Plan' & 'Cancel' Buttons) -->
 <div id="qrPaymentModal" class="generic-modal">
   <div class="generic-modal-box">
     <div class="badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Scan & Pay via UPI</div>
@@ -693,20 +693,15 @@
       <img id="portalQrCodeImage" style="width: 210px; height: 210px; display: block;" alt="Payment QR Code">
     </div>
 
-    <!-- Direct UPI App Intent Link button for seamless payment redirect -->
+    <!-- Direct UPI App Intent Link button -->
     <div style="margin-bottom: 12px;">
       <a id="upiIntentLink" href="#" class="action-btn btn-download" style="display:block; text-decoration:none; padding:11px; text-align:center;">📱 Tap to Pay via GPay / PhonePe / Paytm</a>
     </div>
 
-    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">पेमेंट पूरा करने के बाद नीचे <strong>'Payment Done (Login Now)'</strong> बटन दबाएं।</p>
-
-    <!-- Strictly ONLY 'Payment Done', 'Change Plan' and 'Cancel' Buttons -->
-    <div class="btn-group" style="flex-direction:column; gap:8px;">
-      <button class="action-btn btn-download" style="width:100%; padding:11px; background: linear-gradient(135deg, #2563eb 100%, #1d4ed8 100%);" onclick="simulatePaymentSuccess()">✅ Payment Done (Login Now)</button>
-      <div style="display:flex; gap:8px; width:100%;">
-        <button class="action-btn btn-add" style="flex:1; padding:9px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
-        <button class="action-btn btn-reset" style="flex:1; padding:9px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
-      </div>
+    <!-- Strictly ONLY 'Change Plan' and 'Cancel' Buttons on Payment Screen -->
+    <div class="btn-group" style="display:flex; gap:8px; width:100%;">
+      <button class="action-btn btn-add" style="flex:1; padding:9px;" onclick="changePlanFromPayment()">🔄 Change Plan</button>
+      <button class="action-btn btn-reset" style="flex:1; padding:9px;" onclick="cancelPaymentToLogin()">❌ Cancel</button>
     </div>
   </div>
 </div>
@@ -1270,7 +1265,7 @@
   }
 
   // ==========================================================
-  // MANDATORY PAYWALL & PAYMENT FLOW
+  // MANDATORY PAYWALL & PAYMENT FLOW (STRICT GATEKEEPER)
   // ==========================================================
   let selectedPlanAmount = 1;
   let selectedPlanTitle = '';
@@ -1319,24 +1314,6 @@
     loginScreen.style.display = 'block';
     loginPass.value = '';
   }
-
-  // Payment Done Button Handler
-  window.simulatePaymentSuccess = function() {
-    const currentExp = getActiveValidityExpiryTime() || Date.now();
-    const baseTime = Math.max(Date.now(), currentExp);
-    const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
-
-    localStorage.setItem('system_plan_expiry_time', newExpTime.toString());
-    localStorage.setItem('system_active_plan_tier', selectedPlanDays >= 365 ? 'yearly' : 'monthly');
-
-    document.getElementById('qrPaymentModal').classList.remove('active-modal');
-    document.getElementById('planSelectionScreen').style.display = 'none';
-    
-    // Redirect directly back to login screen as requested
-    loginScreen.style.display = 'block';
-    loginPass.value = '';
-    alert('🎉 Payment Successful! Your plan is now active. Please login with your password.');
-  };
 
   // ==========================================================
   // INDEXEDDB DYNAMIC STORAGE ENGINE
@@ -1569,7 +1546,7 @@
 
       const remainingDays = checkAndHandleExpiry();
 
-      // Agar pehle se valid plan active hai toh seedha app khulegi, warna plan/payment screen aayegi
+      // STRICT CHECK: Agar subscription valid hai tabhi portal khulega, warna plan selection screen dikhegi
       if (remainingDays !== null && remainingDays > 0) {
         sessionStorage.setItem('isLoggedIn', 'true');
         mainApp.style.display = 'block';
