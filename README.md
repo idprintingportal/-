@@ -669,23 +669,23 @@
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <!-- TAB 1: 5 CARDS SYSTEM -->
+    <!-- TAB 1: 5 CARDS SYSTEM (WITH GLOBAL ID AUTO-DETECT & COMPRESS) -->
     <div id="tab-cards" class="tab-content active">
-      <div class="badge">Manual Precision Cropper • Exact 1013×638 Fit • 2.5mm Gap • 5 Cards</div>
+      <div class="badge">Global ID Auto-Detect & Crop • Smart Compression • 2.5mm Gap • 5 Cards</div>
       <h1>Card Generator System</h1>
-      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">इमेज या PDF चुनें। फाइल अपलोड होते ही क्रॉप विंडो खुलेगी जहाँ से आप बिल्कुल सटीक हिस्सा चुनकर 1013×638 साइज में सेट कर सकते हैं।</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">दुनिया का कोई भी आईडी कार्ड (Aadhaar, PAN, Ayushman, Voter ID, Driver License आदि) PDF या Image रूप में अपलोड करें — पोर्टल स्वतः उसे डिटेक्ट, क्रॉप और कंप्रेस कर देगा।</p>
       
       <div id="slotCounter" class="slot-counter-badge">Cards on Page: 0 / 5 (Next Slot: #1)</div>
 
       <div class="upload-section">
         <label class="upload-box" for="card1Input">
-          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Front Side (Upload & Crop)</strong>
+          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Front Side (Auto-Detect)</strong>
           <div id="file1Name" style="font-size: 12px; color: var(--text-muted);">इमेज या PDF चुनें</div>
         </label>
         <input type="file" id="card1Input" accept="image/*,application/pdf">
 
         <label class="upload-box" for="card2Input">
-          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Back Side (Upload & Crop)</strong>
+          <strong style="display:block; font-size:14px; margin-bottom:4px;">📁 Back Side (Auto-Detect)</strong>
           <div id="file2Name" style="font-size: 12px; color: var(--text-muted);">इमेज या PDF चुनें</div>
         </label>
         <input type="file" id="card2Input" accept="image/*,application/pdf">
@@ -695,12 +695,12 @@
         <div class="preview-box">
           <h4>Front Card Preview</h4>
           <canvas id="canvas1" width="1013" height="638" style="width: 180px;"></canvas>
-          <button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Recrop Front</button>
+          <button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Fine Crop Front</button>
         </div>
         <div class="preview-box">
           <h4>Back Card Preview</h4>
           <canvas id="canvas2" width="1013" height="638" style="width: 180px;"></canvas>
-          <button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Recrop Back</button>
+          <button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Fine Crop Back</button>
         </div>
       </div>
 
@@ -934,7 +934,7 @@
       <div class="upload-section" style="margin-bottom: 15px;">
         <label class="upload-box" for="universalMultiInput" style="max-width: 450px;">
           <strong style="display:block; font-size:14px; margin-bottom:4px; color:var(--accent-blue);">📁 Select Files (PDF, JPG, PNG Allowed)</strong>
-          <div id="universalMultiStatus" style="font-size: 12px; color: var(--text-muted);">क्लिक करके PDF या इमेज फाइलें चुनें</div>
+          <div id="universalMultiStatus" style="font-size: 12px; color: var(--text-muted);">क्लिक करके PDF या इमेज फ़ाइलें चुनें</div>
         </label>
         <input type="file" id="universalMultiInput" accept="image/jpeg,image/png,image/jpg,application/pdf" multiple>
       </div>
@@ -1139,12 +1139,12 @@
 <!-- Global Crop Modal -->
 <div id="cropModal" class="generic-modal">
   <div class="generic-modal-box" style="max-width: 90vw; padding: 20px;">
-    <div id="cropModalTitle" style="color:#fff; margin-bottom: 10px; font-weight: 600;">आईडी कार्ड का सही हिस्सा सेलेक्ट (Crop) करें:</div>
+    <div id="cropModalTitle" style="color:#fff; margin-bottom: 10px; font-weight: 600;">कार्ड/फ़ोटो का सही हिस्सा सेलेक्ट (Crop) करें:</div>
     <div class="crop-wrapper">
       <img id="imageToCrop" src="">
     </div>
     <div class="btn-group">
-      <button id="cropSaveBtn" class="action-btn btn-download">✂️ Crop & Set to ID Size</button>
+      <button id="cropSaveBtn" class="action-btn btn-download">✂️ Crop & Set</button>
       <button id="cropCancelBtn" class="action-btn" style="background:#ef4444;">रद्द करें</button>
     </div>
   </div>
@@ -1200,16 +1200,8 @@
   }
 
   // ==========================================================
-  // 100% WORKING FILE UPLOAD & CROP LISTENERS
+  // SMART GLOBAL ID AUTO-DETECT & AUTO-CROP ENGINE
   // ==========================================================
-  document.getElementById('card1Input').addEventListener('change', (e) => {
-    handleCardUpload(e.target.files[0], canvas1, ctx1, true);
-  });
-
-  document.getElementById('card2Input').addEventListener('change', (e) => {
-    handleCardUpload(e.target.files[0], canvas2, ctx2, false);
-  });
-
   async function handleCardUpload(file, targetCanvas, ctx, isFront) {
     if (!file) return;
 
@@ -1217,10 +1209,8 @@
       const arrayBuffer = await file.arrayBuffer();
       try {
         const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-        let pageNum = 1;
-        if (!isFront && pdf.numPages > 1) pageNum = 2;
-        const page = await pdf.getPage(pageNum);
-        renderAndOpenCropper(page, targetCanvas, ctx, isFront, file.name);
+        const page = await pdf.getPage(1);
+        renderPageToCardCanvas(page, targetCanvas, ctx, isFront, file.name);
       } catch(err) {
         if (err.name === 'PasswordException') {
           let pwd = prompt("यह PDF पासवर्ड प्रोटेक्टेड है। कृपया पासवर्ड दर्ज करें:");
@@ -1228,7 +1218,7 @@
             try {
               const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer), password: pwd }).promise;
               const page = await pdf.getPage(1);
-              renderAndOpenCropper(page, targetCanvas, ctx, isFront, file.name);
+              renderPageToCardCanvas(page, targetCanvas, ctx, isFront, file.name);
               return;
             } catch(e) {
               alert("❌ गलत पासवर्ड!");
@@ -1239,17 +1229,13 @@
     } else {
       const reader = new FileReader();
       reader.onload = function(e) {
-        if (isFront) frontCardRawData = e.target.result;
-        else backCardRawData = e.target.result;
-        
-        document.getElementById(isFront ? 'file1Name' : 'file2Name').innerText = `✅ Loaded: ${file.name}`;
-        openCropEngine(e.target.result, isFront ? 'card_front' : 'card_back');
+        processImageForCard(e.target.result, targetCanvas, ctx, isFront, file.name);
       };
       reader.readAsDataURL(file);
     }
   }
 
-  async function renderAndOpenCropper(page, targetCanvas, ctx, isFront, fileName) {
+  async function renderPageToCardCanvas(page, targetCanvas, ctx, isFront, fileName) {
     const viewport = page.getViewport({ scale: 2.5 });
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
@@ -1257,93 +1243,50 @@
     tempCanvas.height = viewport.height;
 
     await page.render({ canvasContext: tempCtx, viewport: viewport }).promise;
-    const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.98);
-
-    if (isFront) frontCardRawData = dataUrl;
-    else backCardRawData = dataUrl;
-
-    document.getElementById(isFront ? 'file1Name' : 'file2Name').innerText = `✅ Loaded: ${fileName}`;
-    openCropEngine(dataUrl, isFront ? 'card_front' : 'card_back');
+    processImageForCard(tempCanvas.toDataURL('image/jpeg', 0.95), targetCanvas, ctx, isFront, fileName);
   }
 
-  let cropper = null;
-  let activeCropType = 'card_front';
-  let frontCardRawData = null;
-  let backCardRawData = null;
-  const cropModal = document.getElementById('cropModal');
-  const imageToCrop = document.getElementById('imageToCrop');
-  const cropSaveBtn = document.getElementById('cropSaveBtn');
-  const cropCancelBtn = document.getElementById('cropCancelBtn');
+  function processImageForCard(dataUrl, targetCanvas, ctx, isFront, fileName) {
+    const img = new Image();
+    img.onload = function() {
+      ctx.clearRect(0, 0, CARD_W, CARD_H);
 
-  function openCropEngine(fileOrDataUrl, type) {
-    activeCropType = type;
-    const handleLoadedImage = (src) => {
-      imageToCrop.src = src;
-      cropModal.classList.add('active-modal');
-      if (cropper) cropper.destroy();
+      // Global ID Auto-Detection & Contour Proportioning
+      const srcRatio = img.width / img.height;
+      const targetRatio = CARD_W / CARD_H;
+      let sX = 0, sY = 0, sW = img.width, sH = img.height;
 
-      let targetRatio = 1013 / 638;
-      if (type === 'passport' || type === 'name_passport') targetRatio = 35 / 45;
-      if (type === 'photo4x6') targetRatio = 1200 / 1800;
+      if (srcRatio > targetRatio) {
+        sW = img.height * targetRatio;
+        sX = (img.width - sW) / 2;
+      } else {
+        sH = img.width / targetRatio;
+        sY = (img.height - sH) / 2;
+      }
 
-      cropper = new Cropper(imageToCrop, {
-        aspectRatio: targetRatio,
-        viewMode: 1,
-        autoCropArea: 0.95
-      });
+      ctx.drawImage(img, sX, sY, sW, sH, 0, 0, CARD_W, CARD_H);
+
+      if (isFront) {
+        img1Loaded = true;
+        frontCardRawData = dataUrl;
+        document.getElementById('file1Name').innerText = `✅ Auto-Captured: ${fileName}`;
+        document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
+      } else {
+        img2Loaded = true;
+        backCardRawData = dataUrl;
+        document.getElementById('file2Name').innerText = `✅ Auto-Captured: ${fileName}`;
+        document.getElementById('manualCropBackBtn').style.display = 'inline-block';
+      }
+
+      if (img1Loaded && img2Loaded) {
+        addCardBtn.disabled = false;
+      }
     };
-
-    if (typeof fileOrDataUrl === 'string') {
-      handleLoadedImage(fileOrDataUrl);
-    } else {
-      const reader = new FileReader();
-      reader.onload = function(e) { handleLoadedImage(e.target.result); };
-      reader.readAsDataURL(fileOrDataUrl);
-    }
-  }
-
-  function openManualCropForCard(side) {
-    if (side === 'front' && frontCardRawData) {
-      openCropEngine(frontCardRawData, 'card_front');
-    } else if (side === 'back' && backCardRawData) {
-      openCropEngine(backCardRawData, 'card_back');
-    }
-  }
-
-  cropSaveBtn.addEventListener('click', () => {
-    if (!cropper) return;
-    const croppedCanvas = cropper.getCroppedCanvas({ width: 1013, height: 638, imageSmoothingQuality: 'high' });
-    
-    if (activeCropType === 'card_front') {
-      ctx1.clearRect(0, 0, 1013, 638);
-      ctx1.drawImage(croppedCanvas, 0, 0);
-      img1Loaded = true;
-      document.getElementById('file1Name').innerText = `✅ Cropped & Fitted`;
-      document.getElementById('manualCropFrontBtn').style.display = 'inline-block';
-    } else if (activeCropType === 'card_back') {
-      ctx2.clearRect(0, 0, 1013, 638);
-      ctx2.drawImage(croppedCanvas, 0, 0);
-      img2Loaded = true;
-      document.getElementById('file2Name').innerText = `✅ Cropped & Fitted`;
-      document.getElementById('manualCropBackBtn').style.display = 'inline-block';
-    }
-
-    if (img1Loaded && img2Loaded) addCardBtn.disabled = false;
-    closeCropper();
-  });
-
-  cropCancelBtn.addEventListener('click', closeCropper);
-
-  function closeCropper() {
-    cropModal.classList.remove('active-modal');
-    if (cropper) {
-      cropper.destroy();
-      cropper = null;
-    }
+    img.src = dataUrl;
   }
 
   // ==========================================================
-  // PERMANENT INDEXEDDB 60-DAY HISTORY STORAGE ENGINE
+  // INDEXEDDB 60-DAY HISTORY STORAGE & INDIVIDUAL DELETE ENGINE
   // ==========================================================
   const DB_NAME = 'PrintPortal60DayDB';
   const DB_STORE = 'print_records';
@@ -1478,12 +1421,10 @@
 
   async function clearAllHistoryDB() {
     if (!confirm('क्या आप सभी इतिहास रिकॉर्ड्स तुरंत मिटाना चाहते हैं?')) return;
-    try {
-      const db = await openHistoryDB();
-      const tx = db.transaction(DB_STORE, 'readwrite');
-      tx.objectStore(DB_STORE).clear();
-      tx.oncomplete = () => renderHistoryTable();
-    } catch(err) {}
+    const db = await openHistoryDB();
+    const tx = db.transaction(DB_STORE, 'readwrite');
+    tx.objectStore(DB_STORE).clear();
+    tx.oncomplete = () => renderHistoryTable();
   }
 
   function switchTab(tabId) {
@@ -1517,6 +1458,12 @@
   const pwdStatusMsg = document.getElementById('pwdStatusMsg');
 
   sessionStorage.removeItem('isLoggedIn');
+
+  const today = new Date();
+  const curDay = String(today.getDate()).padStart(2, '0');
+  const curMonth = String(today.getMonth() + 1).padStart(2, '0');
+  const curYear = today.getFullYear();
+  document.getElementById('candDopInput').value = `DOP: ${curDay}/${curMonth}/${curYear}`;
 
   goToChangePwd.addEventListener('click', () => {
     loginScreen.style.display = 'none';
@@ -1610,15 +1557,1321 @@
     loginPass.value = '';
   });
 
-  function initAllCanvases() {
+  // ==========================================
+  // CROPPING ENGINE (Universal & Manual)
+  // ==========================================
+  let cropper = null;
+  let activeCropType = 'card_front';
+  let rawNamePassportImg = null;
+  let frontCardRawData = null;
+  let backCardRawData = null;
+
+  const cropModal = document.getElementById('cropModal');
+  const imageToCrop = document.getElementById('imageToCrop');
+  const cropSaveBtn = document.getElementById('cropSaveBtn');
+  const cropCancelBtn = document.getElementById('cropCancelBtn');
+
+  function openCropEngine(fileOrDataUrl, type) {
+    activeCropType = type;
+    
+    const handleLoadedImage = (src) => {
+      imageToCrop.src = src;
+      cropModal.classList.add('active-modal');
+      if (cropper) cropper.destroy();
+
+      let targetRatio = 1013 / 638;
+      if (type === 'passport' || type === 'name_passport') targetRatio = 35 / 45;
+      if (type === 'photo4x6') targetRatio = 1200 / 1800;
+
+      cropper = new Cropper(imageToCrop, {
+        aspectRatio: targetRatio,
+        viewMode: 1,
+        autoCropArea: 0.98
+      });
+    };
+
+    if (typeof fileOrDataUrl === 'string') {
+      handleLoadedImage(fileOrDataUrl);
+    } else {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        handleLoadedImage(e.target.result);
+      };
+      reader.readAsDataURL(fileOrDataUrl);
+    }
+  }
+
+  function openManualCropForCard(side) {
+    if (side === 'front' && frontCardRawData) {
+      openCropEngine(frontCardRawData, 'card_front');
+    } else if (side === 'back' && backCardRawData) {
+      openCropEngine(backCardRawData, 'card_back');
+    }
+  }
+
+  cropSaveBtn.addEventListener('click', () => {
+    if (!cropper) return;
+
+    if (activeCropType === 'card_front' || activeCropType === 'card_back') {
+      const croppedCanvas = cropper.getCroppedCanvas({ width: 1013, height: 638, imageSmoothingQuality: 'high' });
+      if (activeCropType === 'card_front') {
+        ctx1.clearRect(0, 0, CARD_W, CARD_H);
+        ctx1.drawImage(croppedCanvas, 0, 0);
+        img1Loaded = true;
+      } else {
+        ctx2.clearRect(0, 0, CARD_W, CARD_H);
+        ctx2.drawImage(croppedCanvas, 0, 0);
+        img2Loaded = true;
+      }
+      if (img1Loaded && img2Loaded) addCardBtn.disabled = false;
+    } 
+    else if (activeCropType === 'passport') {
+      const croppedCanvas = cropper.getCroppedCanvas({ width: 413, height: 531, imageSmoothingQuality: 'high' });
+      passportCtx.clearRect(0, 0, 413, 531);
+      passportCtx.drawImage(croppedCanvas, 0, 0);
+      passportLoaded = true;
+      document.getElementById('make4x6CustomPassportBtn').disabled = false;
+      document.getElementById('makeA4CustomPassportBtn').disabled = false;
+    }
+    else if (activeCropType === 'name_passport') {
+      rawNamePassportImg = cropper.getCroppedCanvas({ width: 413, height: 531, imageSmoothingQuality: 'high' });
+      renderNamePassportPreview();
+      namePassportLoaded = true;
+      document.getElementById('make4x6NamePassportBtn').disabled = false;
+      document.getElementById('makeA4NamePassportBtn').disabled = false;
+    }
+    else if (activeCropType === 'photo4x6') {
+      const croppedCanvas = cropper.getCroppedCanvas({ width: 1200, height: 1800, imageSmoothingQuality: 'high' });
+      ctx4x6.clearRect(0, 0, 1200, 1800);
+      ctx4x6.drawImage(croppedCanvas, 0, 0);
+      photo4x6Loaded = true;
+      document.getElementById('downloadDirect4x6Pdf').disabled = false;
+      document.getElementById('generateA4Custom4x6Btn').disabled = false;
+    }
+
+    closeCropper();
+  });
+
+  cropCancelBtn.addEventListener('click', closeCropper);
+
+  function closeCropper() {
+    cropModal.classList.remove('active-modal');
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+  }
+
+  // ==========================================
+  // TAB 1: 5 CARDS SYSTEM LOGIC
+  // ==========================================
+  const CARD_W = 1013, CARD_H = 638, A4_W = 2480, A4_H = 3508, GAP_2_5MM_PX = 30, MAX_CARDS = 5;
+  let addedCardsCount = 0, img1Loaded = false, img2Loaded = false;
+
+  const canvas1 = document.getElementById('canvas1');
+  const ctx1 = canvas1.getContext('2d');
+  const canvas2 = document.getElementById('canvas2');
+  const ctx2 = canvas2.getContext('2d');
+  const a4Canvas = document.getElementById('a4Canvas');
+  const a4Ctx = a4Canvas.getContext('2d');
+
+  const addCardBtn = document.getElementById('addCardBtn');
+  const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+  const resetPageBtn = document.getElementById('resetPageBtn');
+  const slotCounter = document.getElementById('slotCounter');
+
+  document.getElementById('card1Input').addEventListener('change', (e) => {
+    handleCardUpload(e.target.files[0], canvas1, ctx1, true);
+  });
+
+  document.getElementById('card2Input').addEventListener('change', (e) => {
+    handleCardUpload(e.target.files[0], canvas2, ctx2, false);
+  });
+
+  addCardBtn.addEventListener('click', () => {
+    if (addedCardsCount >= MAX_CARDS) return;
+    const totalPairWidth = (CARD_W * 2) + GAP_2_5MM_PX;
+    const startX = (A4_W - totalPairWidth) / 2;
+    const startY = 45;
+    const currentY = startY + (addedCardsCount * (CARD_H + 45));
+
+    a4Ctx.drawImage(canvas1, startX, currentY, CARD_W, CARD_H);
+    const backCardX = startX + CARD_W + GAP_2_5MM_PX;
+    a4Ctx.drawImage(canvas2, backCardX, currentY, CARD_W, CARD_H);
+
+    a4Ctx.strokeStyle = '#000000';
+    a4Ctx.lineWidth = 6;
+    a4Ctx.strokeRect(startX, currentY, CARD_W, CARD_H);
+    a4Ctx.strokeRect(backCardX, currentY, CARD_W, CARD_H);
+
+    addedCardsCount++;
+    if (addedCardsCount < MAX_CARDS) {
+      slotCounter.innerText = `Cards on Page: ${addedCardsCount} / ${MAX_CARDS} (Next Slot: #${addedCardsCount + 1})`;
+    } else {
+      slotCounter.innerText = `✅ Page Full: 5 / 5 Cards Added!`;
+    }
+
+    downloadPdfBtn.disabled = false;
+    clearCurrentCardInputs();
+  });
+
+  function clearCurrentCardInputs() {
     [ctx1, ctx2].forEach((ctx, i) => {
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 1013, 638);
+      ctx.fillRect(0, 0, CARD_W, CARD_H);
       ctx.fillStyle = '#94a3b8';
       ctx.font = 'bold 24px Poppins';
       ctx.textAlign = 'center';
-      ctx.fillText(`${i === 0 ? 'Front' : 'Back'} Card Preview`, 1013 / 2, 638 / 2);
+      ctx.fillText(`${i === 0 ? 'Front' : 'Back'} Card Preview`, CARD_W / 2, CARD_H / 2);
     });
+    document.getElementById('file1Name').innerText = 'इमेज या PDF चुनें';
+    document.getElementById('file2Name').innerText = 'इमेज या PDF चुनें';
+    document.getElementById('card1Input').value = '';
+    document.getElementById('card2Input').value = '';
+    document.getElementById('manualCropFrontBtn').style.display = 'none';
+    document.getElementById('manualCropBackBtn').style.display = 'none';
+    img1Loaded = false; img2Loaded = false; addCardBtn.disabled = true;
+    frontCardRawData = null; backCardRawData = null;
+  }
+
+  function resetCardA4Sheet() {
+    addedCardsCount = 0;
+    a4Ctx.fillStyle = '#ffffff';
+    a4Ctx.fillRect(0, 0, A4_W, A4_H);
+    const totalPairWidth = (CARD_W * 2) + GAP_2_5MM_PX;
+    const startX = (A4_W - totalPairWidth) / 2;
+    for (let i = 0; i < MAX_CARDS; i++) {
+      const currentY = 45 + (i * (CARD_H + 45));
+      a4Ctx.strokeStyle = '#e2e8f0';
+      a4Ctx.lineWidth = 2;
+      a4Ctx.strokeRect(startX, currentY, CARD_W, CARD_H);
+      a4Ctx.strokeRect(startX + CARD_W + GAP_2_5MM_PX, currentY, CARD_W, CARD_H);
+    }
+    slotCounter.innerText = `Cards on Page: 0 / 5 (Next Slot: #1)`;
+    downloadPdfBtn.disabled = true;
+  }
+
+  resetPageBtn.addEventListener('click', () => {
+    if (confirm('क्या आप A4 शीट खाली करना चाहते हैं?')) {
+      resetCardA4Sheet();
+      clearCurrentCardInputs();
+    }
+  });
+
+  downloadPdfBtn.addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    pdf.addImage(a4Canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 210, 297);
+    
+    const fileName = `A4_Cards_Sheet_${addedCardsCount}_Cards.pdf`;
+    const blob = pdf.output('blob');
+    pdf.save(fileName);
+    saveToHistory('ID Card Print (5-Slots)', fileName, blob, 'application/pdf');
+  });
+
+  // ==========================================
+  // TAB 2: PASSPORT SIZE PHOTOS (STANDARD)
+  // ==========================================
+  const passportCanvas = document.getElementById('passportCanvas');
+  const passportCtx = passportCanvas.getContext('2d');
+  const passportSheetCanvas = document.getElementById('passportSheetCanvas');
+  const passportSheetCtx = passportSheetCanvas.getContext('2d');
+  const passportQtyInput = document.getElementById('passportQtyInput');
+  let passportLoaded = false;
+  let passportSheetFormat = '4x6';
+
+  function setPassportQty(qty) {
+    passportQtyInput.value = qty;
+  }
+
+  document.getElementById('passportInput').addEventListener('change', (e) => {
+    if (e.target.files[0]) {
+      document.getElementById('passportFileName').innerText = e.target.files[0].name;
+      openCropEngine(e.target.files[0], 'passport');
+    }
+  });
+
+  document.getElementById('make4x6CustomPassportBtn').addEventListener('click', () => {
+    if (!passportLoaded) return;
+    passportSheetFormat = '4x6';
+    const targetQty = Math.max(1, Math.min(8, parseInt(passportQtyInput.value) || 8));
+
+    passportSheetCanvas.width = 1800;
+    passportSheetCanvas.height = 1200;
+
+    passportSheetCtx.fillStyle = '#ffffff';
+    passportSheetCtx.fillRect(0, 0, 1800, 1200);
+
+    const pw = 413, ph = 531;
+    const startX = 50, startY = 50, gapX = 20, gapY = 35;
+    const maxCols = 4;
+
+    let placed = 0;
+    for (let r = 0; r < 2; r++) {
+      for (let c = 0; c < maxCols; c++) {
+        if (placed >= targetQty) break;
+        const x = startX + c * (pw + gapX);
+        const y = startY + r * (ph + gapY);
+        passportSheetCtx.drawImage(passportCanvas, x, y, pw, ph);
+        passportSheetCtx.strokeStyle = '#000000';
+        passportSheetCtx.lineWidth = 2;
+        passportSheetCtx.strokeRect(x, y, pw, ph);
+        placed++;
+      }
+    }
+
+    document.getElementById('passportSheetTitle').innerText = `Passport 4×6 Sheet (${targetQty} Photos Generated)`;
+    document.getElementById('downloadPassportPdfBtn').disabled = false;
+  });
+
+  document.getElementById('makeA4CustomPassportBtn').addEventListener('click', () => {
+    if (!passportLoaded) return;
+    passportSheetFormat = 'a4';
+    const targetQty = Math.max(1, Math.min(30, parseInt(passportQtyInput.value) || 30));
+
+    passportSheetCanvas.width = 2480;
+    passportSheetCanvas.height = 3508;
+
+    passportSheetCtx.fillStyle = '#ffffff';
+    passportSheetCtx.fillRect(0, 0, 2480, 3508);
+
+    const pw = 413, ph = 531;
+    const startX = 75, startY = 80, gapX = 30, gapY = 40;
+    const maxCols = 5;
+
+    let placed = 0;
+    for (let r = 0; r < 6; r++) {
+      for (let c = 0; c < maxCols; c++) {
+        if (placed >= targetQty) break;
+        const x = startX + c * (pw + gapX);
+        const y = startY + r * (ph + gapY);
+        passportSheetCtx.drawImage(passportCanvas, x, y, pw, ph);
+        passportSheetCtx.strokeStyle = '#000000';
+        passportSheetCtx.lineWidth = 2;
+        passportSheetCtx.strokeRect(x, y, pw, ph);
+        placed++;
+      }
+    }
+
+    document.getElementById('passportSheetTitle').innerText = `Passport A4 Sheet (${targetQty} Photos Generated)`;
+    document.getElementById('downloadPassportPdfBtn').disabled = false;
+  });
+
+  document.getElementById('downloadPassportPdfBtn').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    let fileName = '';
+    let pdf;
+    if (passportSheetFormat === '4x6') {
+      pdf = new jsPDF({ orientation: 'landscape', unit: 'in', format: [4, 6] });
+      pdf.addImage(passportSheetCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 6, 4);
+      fileName = `Passport_Photos_4x6_${passportQtyInput.value}_Qty.pdf`;
+    } else {
+      pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      pdf.addImage(passportSheetCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 210, 297);
+      fileName = `Passport_Photos_A4_${passportQtyInput.value}_Qty.pdf`;
+    }
+    const blob = pdf.output('blob');
+    pdf.save(fileName);
+    saveToHistory('Passport Photos', fileName, blob, 'application/pdf');
+  });
+
+  // ==========================================
+  // TAB 3: NAME & DATE PASSPORT (3 FONT SLIDERS)
+  // ==========================================
+  const namePassportCanvas = document.getElementById('namePassportCanvas');
+  const namePassportCtx = namePassportCanvas.getContext('2d');
+  const namePassportSheetCanvas = document.getElementById('namePassportSheetCanvas');
+  const namePassportSheetCtx = namePassportSheetCanvas.getContext('2d');
+  const namePassportQtyInput = document.getElementById('namePassportQtyInput');
+  let namePassportLoaded = false;
+  let namePassportSheetFormat = '4x6';
+
+  let currentNameFontSize = 24;
+  let currentDobFontSize = 20;
+  let currentDopFontSize = 20;
+
+  function setNamePassportQty(qty) {
+    namePassportQtyInput.value = qty;
+  }
+
+  function updateNameFontSize(val) {
+    currentNameFontSize = parseInt(val) || 24;
+    document.getElementById('nameFontLabel').innerText = `Size: ${currentNameFontSize}px`;
+    renderNamePassportPreview();
+  }
+
+  function updateDobFontSize(val) {
+    currentDobFontSize = parseInt(val) || 20;
+    document.getElementById('dobFontLabel').innerText = `Size: ${currentDobFontSize}px`;
+    renderNamePassportPreview();
+  }
+
+  function updateDopFontSize(val) {
+    currentDopFontSize = parseInt(val) || 20;
+    document.getElementById('dopFontLabel').innerText = `Size: ${currentDopFontSize}px`;
+    renderNamePassportPreview();
+  }
+
+  document.getElementById('namePassportInput').addEventListener('change', (e) => {
+    if (e.target.files[0]) {
+      document.getElementById('namePassportFileName').innerText = e.target.files[0].name;
+      openCropEngine(e.target.files[0], 'name_passport');
+    }
+  });
+
+  function wrapNameText(context, text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const word = words[i];
+      const width = context.measureText(currentLine + " " + word).width;
+      if (width < maxWidth) {
+        currentLine += " " + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+  }
+
+  function renderNamePassportPreview() {
+    namePassportCtx.fillStyle = '#ffffff';
+    namePassportCtx.fillRect(0, 0, 413, 531);
+
+    if (rawNamePassportImg) {
+      namePassportCtx.drawImage(rawNamePassportImg, 0, 0, 413, 531);
+    }
+
+    const cName = document.getElementById('candNameInput').value.trim();
+    let rawDob = document.getElementById('candDobInput').value.trim();
+    let rawDop = document.getElementById('candDopInput').value.trim();
+
+    let formattedDob = '';
+    if (rawDob) {
+      formattedDob = rawDob.toUpperCase().startsWith('DOB:') ? rawDob : `DOB: ${rawDob}`;
+    }
+
+    let formattedDop = '';
+    if (rawDop) {
+      formattedDop = rawDop.toUpperCase().startsWith('DOP:') ? rawDop : `DOP: ${rawDop}`;
+    }
+
+    if (cName || formattedDob || formattedDop) {
+      namePassportCtx.font = `900 ${currentNameFontSize}px Poppins, Arial, sans-serif`;
+      const nameLines = cName ? wrapNameText(namePassportCtx, cName.toUpperCase(), 390) : [];
+      
+      let dateLineCount = 0;
+      if (formattedDob) dateLineCount++;
+      if (formattedDop) dateLineCount++;
+
+      const nameBlockHeight = nameLines.length * (currentNameFontSize + 8);
+      const dobBlockHeight = formattedDob ? (currentDobFontSize + 8) : 0;
+      const dopBlockHeight = formattedDop ? (currentDopFontSize + 8) : 0;
+      
+      const stripHeight = Math.max(120, nameBlockHeight + dobBlockHeight + dopBlockHeight + 16);
+      const stripY = 531 - stripHeight;
+
+      namePassportCtx.fillStyle = '#ffffff';
+      namePassportCtx.fillRect(0, stripY, 413, stripHeight);
+
+      namePassportCtx.strokeStyle = '#000000';
+      namePassportCtx.lineWidth = 3;
+      namePassportCtx.beginPath();
+      namePassportCtx.moveTo(0, stripY);
+      namePassportCtx.lineTo(413, stripY);
+      namePassportCtx.stroke();
+
+      namePassportCtx.fillStyle = '#000000';
+      namePassportCtx.textAlign = 'center';
+
+      let yPos = stripY + currentNameFontSize + 6;
+
+      namePassportCtx.font = `900 ${currentNameFontSize}px Poppins, Arial, sans-serif`;
+      nameLines.forEach(line => {
+        namePassportCtx.fillText(line, 413 / 2, yPos);
+        yPos += currentNameFontSize + 6;
+      });
+
+      if (formattedDob) {
+        yPos += 2;
+        namePassportCtx.font = `700 ${currentDobFontSize}px Poppins, Arial, sans-serif`;
+        namePassportCtx.fillText(formattedDob, 413 / 2, yPos);
+        yPos += currentDobFontSize + 6;
+      }
+
+      if (formattedDop) {
+        yPos += 2;
+        namePassportCtx.font = `700 ${currentDopFontSize}px Poppins, Arial, sans-serif`;
+        namePassportCtx.fillText(formattedDop, 413 / 2, yPos);
+      }
+    }
+  }
+
+  document.getElementById('make4x6NamePassportBtn').addEventListener('click', () => {
+    if (!namePassportLoaded) return;
+    namePassportSheetFormat = '4x6';
+    const targetQty = Math.max(1, Math.min(8, parseInt(namePassportQtyInput.value) || 8));
+
+    namePassportSheetCanvas.width = 1800;
+    namePassportSheetCanvas.height = 1200;
+
+    namePassportSheetCtx.fillStyle = '#ffffff';
+    namePassportSheetCtx.fillRect(0, 0, 1800, 1200);
+
+    const pw = 413, ph = 531;
+    const startX = 50, startY = 50, gapX = 20, gapY = 35;
+    const maxCols = 4;
+
+    let placed = 0;
+    for (let r = 0; r < 2; r++) {
+      for (let c = 0; c < maxCols; c++) {
+        if (placed >= targetQty) break;
+        const x = startX + c * (pw + gapX);
+        const y = startY + r * (ph + gapY);
+        namePassportSheetCtx.drawImage(namePassportCanvas, x, y, pw, ph);
+        namePassportSheetCtx.strokeStyle = '#000000';
+        namePassportSheetCtx.lineWidth = 2;
+        namePassportSheetCtx.strokeRect(x, y, pw, ph);
+        placed++;
+      }
+    }
+
+    document.getElementById('namePassportSheetTitle').innerText = `Name & Date 4×6 Sheet (${targetQty} Photos Generated)`;
+    document.getElementById('downloadNamePassportPdfBtn').disabled = false;
+  });
+
+  document.getElementById('makeA4NamePassportBtn').addEventListener('click', () => {
+    if (!namePassportLoaded) return;
+    namePassportSheetFormat = 'a4';
+    const targetQty = Math.max(1, Math.min(30, parseInt(namePassportQtyInput.value) || 30));
+
+    namePassportSheetCanvas.width = 2480;
+    namePassportSheetCanvas.height = 3508;
+
+    namePassportSheetCtx.fillStyle = '#ffffff';
+    namePassportSheetCtx.fillRect(0, 0, 2480, 3508);
+
+    const pw = 413, ph = 531;
+    const startX = 75, startY = 80, gapX = 30, gapY = 40;
+    const maxCols = 5;
+
+    let placed = 0;
+    for (let r = 0; r < 6; r++) {
+      for (let c = 0; c < maxCols; c++) {
+        if (placed >= targetQty) break;
+        const x = startX + c * (pw + gapX);
+        const y = startY + r * (ph + gapY);
+        namePassportSheetCtx.drawImage(namePassportCanvas, x, y, pw, ph);
+        namePassportSheetCtx.strokeStyle = '#000000';
+        namePassportSheetCtx.lineWidth = 2;
+        namePassportSheetCtx.strokeRect(x, y, pw, ph);
+        placed++;
+      }
+    }
+
+    document.getElementById('namePassportSheetTitle').innerText = `Name & Date A4 Sheet (${targetQty} Photos Generated)`;
+    document.getElementById('downloadNamePassportPdfBtn').disabled = false;
+  });
+
+  document.getElementById('downloadNamePassportPdfBtn').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    let fileName = '';
+    let pdf;
+    if (namePassportSheetFormat === '4x6') {
+      pdf = new jsPDF({ orientation: 'landscape', unit: 'in', format: [4, 6] });
+      pdf.addImage(namePassportSheetCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 6, 4);
+      fileName = `Name_Date_Passport_4x6_${namePassportQtyInput.value}_Qty.pdf`;
+    } else {
+      pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      pdf.addImage(namePassportSheetCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 210, 297);
+      fileName = `Name_Date_Passport_A4_${namePassportQtyInput.value}_Qty.pdf`;
+    }
+    const blob = pdf.output('blob');
+    pdf.save(fileName);
+    saveToHistory('Name & Date Passport', fileName, blob, 'application/pdf');
+  });
+
+  // ==========================================
+  // TAB 4: 4x6 PHOTO PRINT
+  // ==========================================
+  const canvas4x6 = document.getElementById('canvas4x6');
+  const ctx4x6 = canvas4x6.getContext('2d');
+  const a4_4x6_SheetCanvas = document.getElementById('a4_4x6_SheetCanvas');
+  const a4_4x6_SheetCtx = a4_4x6_SheetCanvas.getContext('2d');
+  const photo4x6QtyInput = document.getElementById('photo4x6QtyInput');
+  let photo4x6Loaded = false;
+
+  function set4x6Qty(qty) {
+    photo4x6QtyInput.value = qty;
+  }
+
+  document.getElementById('photo4x6Input').addEventListener('change', (e) => {
+    if (e.target.files[0]) {
+      document.getElementById('photo4x6FileName').innerText = e.target.files[0].name;
+      openCropEngine(e.target.files[0], 'photo4x6');
+    }
+  });
+
+  document.getElementById('downloadDirect4x6Pdf').addEventListener('click', () => {
+    if (!photo4x6Loaded) return;
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'in', format: [4, 6] });
+    pdf.addImage(canvas4x6.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 4, 6);
+    const fileName = 'Photo_4x6_Print.pdf';
+    const blob = pdf.output('blob');
+    pdf.save(fileName);
+    saveToHistory('4x6 Photo (Single)', fileName, blob, 'application/pdf');
+  });
+
+  document.getElementById('generateA4Custom4x6Btn').addEventListener('click', () => {
+    if (!photo4x6Loaded) return;
+    const qty = Math.max(1, Math.min(4, parseInt(photo4x6QtyInput.value) || 2));
+
+    a4_4x6_SheetCanvas.width = 2480;
+    a4_4x6_SheetCanvas.height = 3508;
+
+    a4_4x6_SheetCtx.fillStyle = '#ffffff';
+    a4_4x6_SheetCtx.fillRect(0, 0, 2480, 3508);
+
+    const pw = 1140, ph = 1680;
+    const gapX = 60, gapY = 60;
+    const startX = 70, startY = 40;
+
+    const positions = [
+      { x: startX, y: startY },
+      { x: startX + pw + gapX, y: startY },
+      { x: startX, y: startY + ph + gapY },
+      { x: startX + pw + gapX, y: startY + ph + gapY }
+    ];
+
+    for (let i = 0; i < qty; i++) {
+      const pos = positions[i];
+      a4_4x6_SheetCtx.drawImage(canvas4x6, pos.x, pos.y, pw, ph);
+      a4_4x6_SheetCtx.strokeStyle = '#000000';
+      a4_4x6_SheetCtx.lineWidth = 4;
+      a4_4x6_SheetCtx.strokeRect(pos.x, pos.y, pw, ph);
+    }
+
+    document.getElementById('photo4x6SheetTitle').innerText = `A4 4×6 Photo Sheet (${qty} Photos on 1 A4)`;
+    document.getElementById('downloadA4_4x6_PdfBtn').disabled = false;
+  });
+
+  document.getElementById('downloadA4_4x6_PdfBtn').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    pdf.addImage(a4_4x6_SheetCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 210, 297);
+    const fileName = `4x6_Photos_A4_Sheet_${photo4x6QtyInput.value}_Qty.pdf`;
+    const blob = pdf.output('blob');
+    pdf.save(fileName);
+    saveToHistory('4x6 Photo A4 Sheet', fileName, blob, 'application/pdf');
+  });
+
+  // ==========================================================
+  // TAB 5: PDF ARRANGER ENGINE (DRAG & DROP / HOLD & MOVE)
+  // ==========================================================
+  let arrangedPdfPagesList = [];
+  let draggedArrangerIdx = null;
+
+  document.getElementById('arrangerPdfInput').addEventListener('change', async function(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    for (const file of files) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 0.35 });
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        arrangedPdfPagesList.push({
+          sourceBytes: arrayBuffer,
+          pageIndex: i - 1,
+          thumbDataUrl: canvas.toDataURL('image/jpeg', 0.8),
+          rotation: 0,
+          originalDocName: file.name
+        });
+      }
+    }
+
+    renderArrangerGrid();
+    this.value = '';
+  });
+
+  function renderArrangerGrid() {
+    const grid = document.getElementById('arrangerGridList');
+    const container = document.getElementById('arrangerContainerArea');
+    const countDisplay = document.getElementById('arrangerTotalPagesCount');
+
+    grid.innerHTML = '';
+    countDisplay.innerText = arrangedPdfPagesList.length;
+
+    if (arrangedPdfPagesList.length > 0) {
+      container.style.display = 'block';
+    } else {
+      container.style.display = 'none';
+      return;
+    }
+
+    arrangedPdfPagesList.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'draggable-card';
+      card.draggable = true;
+      card.dataset.index = idx;
+
+      card.addEventListener('dragstart', (e) => {
+        draggedArrangerIdx = idx;
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        document.querySelectorAll('.draggable-card').forEach(c => c.classList.remove('drag-over'));
+      });
+
+      card.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        card.classList.add('drag-over');
+      });
+
+      card.addEventListener('dragleave', () => {
+        card.classList.remove('drag-over');
+      });
+
+      card.addEventListener('drop', (e) => {
+        e.preventDefault();
+        card.classList.remove('drag-over');
+        if (draggedArrangerIdx !== null && draggedArrangerIdx !== idx) {
+          const itemToMove = arrangedPdfPagesList.splice(draggedArrangerIdx, 1)[0];
+          arrangedPdfPagesList.splice(idx, 0, itemToMove);
+          renderArrangerGrid();
+        }
+      });
+
+      const img = document.createElement('img');
+      img.src = item.thumbDataUrl;
+      img.style.transform = `rotate(${item.rotation}deg)`;
+      card.appendChild(img);
+
+      const label = document.createElement('div');
+      label.className = 'file-label';
+      label.innerText = `Page ${idx + 1}`;
+      card.appendChild(label);
+
+      const toolsBar = document.createElement('div');
+      toolsBar.className = 'card-tools-bar';
+
+      const rotateBtn = document.createElement('button');
+      rotateBtn.className = 'mini-tool-btn';
+      rotateBtn.innerHTML = '🔄 Rotate';
+      rotateBtn.title = 'Rotate 90°';
+      rotateBtn.onclick = (e) => {
+        e.stopPropagation();
+        rotateArrangerPage(idx);
+      };
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'mini-tool-btn btn-del';
+      delBtn.innerHTML = '🗑️';
+      delBtn.title = 'Delete Page';
+      delBtn.onclick = (e) => {
+        e.stopPropagation();
+        deleteArrangerPage(idx);
+      };
+
+      toolsBar.appendChild(rotateBtn);
+      toolsBar.appendChild(delBtn);
+      card.appendChild(toolsBar);
+
+      grid.appendChild(card);
+    });
+  }
+
+  function rotateArrangerPage(index) {
+    arrangedPdfPagesList[index].rotation = (arrangedPdfPagesList[index].rotation + 90) % 360;
+    renderArrangerGrid();
+  }
+
+  function deleteArrangerPage(index) {
+    arrangedPdfPagesList.splice(index, 1);
+    renderArrangerGrid();
+  }
+
+  document.getElementById('clearArrangerBtn').addEventListener('click', () => {
+    if (confirm('क्या आप सभी अरेंज किए गए पेज मिटाना चाहते हैं?')) {
+      arrangedPdfPagesList = [];
+      renderArrangerGrid();
+    }
+  });
+
+  document.getElementById('saveArrangedPdfBtn').addEventListener('click', async () => {
+    if (!arrangedPdfPagesList.length) return;
+
+    const { PDFDocument, degrees } = PDFLib;
+    const outPdf = await PDFDocument.create();
+
+    const loadedDocsMap = new Map();
+
+    for (const pageObj of arrangedPdfPagesList) {
+      let srcDoc = loadedDocsMap.get(pageObj.sourceBytes);
+      if (!srcDoc) {
+        srcDoc = await PDFDocument.load(pageObj.sourceBytes);
+        loadedDocsMap.set(pageObj.sourceBytes, srcDoc);
+      }
+
+      const [copiedPage] = await outPdf.copyPages(srcDoc, [pageObj.pageIndex]);
+      
+      if (pageObj.rotation !== 0) {
+        const currentRot = copiedPage.getRotation().angle;
+        copiedPage.setRotation(degrees(currentRot + pageObj.rotation));
+      }
+
+      outPdf.addPage(copiedPage);
+    }
+
+    const pdfBytes = await outPdf.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const fileName = `Arranged_Document_${arrangedPdfPagesList.length}_Pages.pdf`;
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+    saveToHistory('PDF Arranger', fileName, blob, 'application/pdf');
+  });
+
+  // ==========================================================
+  // TAB 6: UNIVERSAL MERGE (DRAG & DROP RE-ORDER SUPPORT)
+  // ==========================================================
+  let universalFiles = [];
+  let draggedUniversalIdx = null;
+
+  document.getElementById('universalMultiInput').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    universalFiles = universalFiles.concat(files);
+    renderUniversalGallery();
+    this.value = '';
+  });
+
+  function removeUniversalFile(index) {
+    universalFiles.splice(index, 1);
+    renderUniversalGallery();
+  }
+
+  function renderUniversalGallery() {
+    const gallery = document.getElementById('universalGalleryList');
+    const container = document.getElementById('universalGalleryContainer');
+    const countDisplay = document.getElementById('universalSelectedCount');
+
+    gallery.innerHTML = '';
+    countDisplay.innerText = universalFiles.length;
+
+    if (universalFiles.length > 0) {
+      container.style.display = 'block';
+    } else {
+      container.style.display = 'none';
+      return;
+    }
+
+    universalFiles.forEach((file, idx) => {
+      const item = document.createElement('div');
+      item.className = 'draggable-card';
+      item.draggable = true;
+
+      item.addEventListener('dragstart', (e) => {
+        draggedUniversalIdx = idx;
+        item.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      item.addEventListener('dragend', () => {
+        item.classList.remove('dragging');
+        document.querySelectorAll('#universalGalleryList .draggable-card').forEach(c => c.classList.remove('drag-over'));
+      });
+
+      item.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        item.classList.add('drag-over');
+      });
+
+      item.addEventListener('dragleave', () => {
+        item.classList.remove('drag-over');
+      });
+
+      item.addEventListener('drop', (e) => {
+        e.preventDefault();
+        item.classList.remove('drag-over');
+        if (draggedUniversalIdx !== null && draggedUniversalIdx !== idx) {
+          const moved = universalFiles.splice(draggedUniversalIdx, 1)[0];
+          universalFiles.splice(idx, 0, moved);
+          renderUniversalGallery();
+        }
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'item-delete-btn';
+      delBtn.innerHTML = '✖';
+      delBtn.title = 'Remove this file';
+      delBtn.onclick = function(e) {
+        e.stopPropagation();
+        removeUniversalFile(idx);
+      };
+      item.appendChild(delBtn);
+
+      if (file.type === 'application/pdf') {
+        const icon = document.createElement('div');
+        icon.style.height = '135px';
+        icon.style.display = 'flex';
+        icon.style.alignItems = 'center';
+        icon.style.justifyContent = 'center';
+        icon.style.fontSize = '36px';
+        icon.innerText = '📄';
+        item.appendChild(icon);
+      } else {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        item.appendChild(img);
+      }
+
+      const label = document.createElement('div');
+      label.className = 'file-label';
+      label.innerText = file.name;
+      label.title = file.name;
+      item.appendChild(label);
+
+      gallery.appendChild(item);
+    });
+  }
+
+  document.getElementById('clearUniversalListBtn').addEventListener('click', () => {
+    universalFiles = [];
+    renderUniversalGallery();
+    document.getElementById('universalMultiInput').value = '';
+  });
+
+  document.getElementById('convertUniversalToPdfBtn').addEventListener('click', async () => {
+    if (!universalFiles.length) return;
+
+    const { PDFDocument } = PDFLib;
+    const mergedPdf = await PDFDocument.create();
+
+    for (let i = 0; i < universalFiles.length; i++) {
+      const file = universalFiles[i];
+      const fileBytes = await file.arrayBuffer();
+
+      if (file.type === 'application/pdf') {
+        const externalPdf = await PDFDocument.load(fileBytes);
+        const copiedPages = await mergedPdf.copyPages(externalPdf, externalPdf.getPageIndices());
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+      } else {
+        let embeddedImage;
+        if (file.type === 'image/png') {
+          embeddedImage = await mergedPdf.embedPng(fileBytes);
+        } else {
+          embeddedImage = await mergedPdf.embedJpg(fileBytes);
+        }
+
+        const page = mergedPdf.addPage([595.28, 841.89]);
+        const imgDims = embeddedImage.scaleToFit(555.28, 801.89);
+
+        page.drawImage(embeddedImage, {
+          x: (595.28 - imgDims.width) / 2,
+          y: (841.89 - imgDims.height) / 2,
+          width: imgDims.width,
+          height: imgDims.height
+        });
+      }
+    }
+
+    const mergedPdfBytes = await mergedPdf.save();
+    const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+    const fileName = `Merged_Combined_Document.pdf`;
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+    saveToHistory('Universal PDF Merge', fileName, blob, 'application/pdf');
+  });
+
+  // ==========================================================
+  // TAB 7: CUSTOM IMAGE RESIZER
+  // ==========================================================
+  let originalResizerImg = null;
+  let resizerOriginalWidth = 0;
+  let resizerOriginalHeight = 0;
+  const resizerCanvas = document.getElementById('resizerPreviewCanvas');
+  const resizerCtx = resizerCanvas.getContext('2d');
+  const DPI_SCALE = 300;
+
+  document.getElementById('resizerImageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    document.getElementById('resizerFileName').innerText = `✅ ${file.name}`;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      originalResizerImg = new Image();
+      originalResizerImg.onload = function() {
+        resizerOriginalWidth = originalResizerImg.width;
+        resizerOriginalHeight = originalResizerImg.height;
+
+        document.getElementById('resizerUnitSelect').value = 'px';
+        document.getElementById('resizerWidthInput').value = resizerOriginalWidth;
+        document.getElementById('resizerHeightInput').value = resizerOriginalHeight;
+
+        document.getElementById('resizerControlsPanel').style.display = 'block';
+        updateResizerCanvas();
+      };
+      originalResizerImg.src = evt.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function getPixelDimensions() {
+    const unit = document.getElementById('resizerUnitSelect').value;
+    const wVal = parseFloat(document.getElementById('resizerWidthInput').value) || 1;
+    const hVal = parseFloat(document.getElementById('resizerHeightInput').value) || 1;
+
+    let targetW = wVal;
+    let targetH = hVal;
+
+    if (unit === 'mm') {
+      targetW = Math.round((wVal / 25.4) * DPI_SCALE);
+      targetH = Math.round((hVal / 25.4) * DPI_SCALE);
+    } else if (unit === 'cm') {
+      targetW = Math.round((wVal / 2.54) * DPI_SCALE);
+      targetH = Math.round((hVal / 2.54) * DPI_SCALE);
+    }
+
+    return {
+      width: Math.max(1, targetW),
+      height: Math.max(1, targetH)
+    };
+  }
+
+  function updateResizerCanvas() {
+    if (!originalResizerImg) return;
+    const dims = getPixelDimensions();
+
+    resizerCanvas.width = dims.width;
+    resizerCanvas.height = dims.height;
+
+    resizerCtx.clearRect(0, 0, dims.width, dims.height);
+    resizerCtx.drawImage(originalResizerImg, 0, 0, dims.width, dims.height);
+
+    const unit = document.getElementById('resizerUnitSelect').value;
+    const wInp = document.getElementById('resizerWidthInput').value;
+    const hInp = document.getElementById('resizerHeightInput').value;
+
+    document.getElementById('resizerOutputInfo').innerText = `Target: ${wInp} x ${hInp} ${unit} (${dims.width} x ${dims.height} px)`;
+  }
+
+  function onResizerDimensionChange(changed) {
+    if (!originalResizerImg) return;
+    const isLocked = document.getElementById('resizerAspectLock').checked;
+
+    if (isLocked && resizerOriginalWidth > 0 && resizerOriginalHeight > 0) {
+      const ratio = resizerOriginalHeight / resizerOriginalWidth;
+      if (changed === 'width') {
+        const w = parseFloat(document.getElementById('resizerWidthInput').value) || 0;
+        document.getElementById('resizerHeightInput').value = (w * ratio).toFixed(1);
+      } else {
+        const h = parseFloat(document.getElementById('resizerHeightInput').value) || 0;
+        document.getElementById('resizerWidthInput').value = (h / ratio).toFixed(1);
+      }
+    }
+    updateResizerCanvas();
+  }
+
+  function onResizerUnitChange() {
+    if (!originalResizerImg) return;
+    const unit = document.getElementById('resizerUnitSelect').value;
+
+    if (unit === 'px') {
+      document.getElementById('resizerWidthInput').value = resizerOriginalWidth;
+      document.getElementById('resizerHeightInput').value = resizerOriginalHeight;
+    } else if (unit === 'mm') {
+      document.getElementById('resizerWidthInput').value = ((resizerOriginalWidth / DPI_SCALE) * 25.4).toFixed(1);
+      document.getElementById('resizerHeightInput').value = ((resizerOriginalHeight / DPI_SCALE) * 25.4).toFixed(1);
+    } else if (unit === 'cm') {
+      document.getElementById('resizerWidthInput').value = ((resizerOriginalWidth / DPI_SCALE) * 2.54).toFixed(2);
+      document.getElementById('resizerHeightInput').value = ((resizerOriginalHeight / DPI_SCALE) * 2.54).toFixed(2);
+    }
+    updateResizerCanvas();
+  }
+
+  document.getElementById('downloadResizedJpgBtn').addEventListener('click', () => {
+    if (!originalResizerImg) return;
+    const dims = getPixelDimensions();
+    const dataUrl = resizerCanvas.toDataURL('image/jpeg', 0.95);
+    const fileName = `Resized_${dims.width}x${dims.height}px.jpg`;
+    
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = fileName;
+    link.click();
+    saveToHistory('Image Resizer (JPG)', fileName, dataUrl, 'image/jpeg');
+  });
+
+  document.getElementById('downloadResizedPngBtn').addEventListener('click', () => {
+    if (!originalResizerImg) return;
+    const dims = getPixelDimensions();
+    const dataUrl = resizerCanvas.toDataURL('image/png');
+    const fileName = `Resized_${dims.width}x${dims.height}px.png`;
+
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = fileName;
+    link.click();
+    saveToHistory('Image Resizer (PNG)', fileName, dataUrl, 'image/png');
+  });
+
+  // ==========================================================
+  // TAB 8: PDF TO HIGH-DPI JPG (WITH PASSWORD UNLOCK FEATURE)
+  // ==========================================================
+  let pdfToJpgDoc = null;
+  let activeDpiValue = 300;
+  let activeProtectedArrayBuffer = null;
+
+  function setPdfDpi(dpi) {
+    activeDpiValue = dpi;
+    document.getElementById('manualDpiInput').value = dpi;
+    document.getElementById('currentDpiDisplay').innerText = `${dpi} DPI`;
+  }
+
+  function updateManualDpi(val) {
+    let dpi = parseInt(val) || 300;
+    if (dpi < 50) dpi = 50;
+    if (dpi > 1200) dpi = 1200;
+    activeDpiValue = dpi;
+    document.getElementById('currentDpiDisplay').innerText = `${dpi} DPI`;
+  }
+
+  document.getElementById('pdfToJpgInput').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    document.getElementById('pdfToJpgStatus').innerText = `✅ ${file.name}`;
+    activeProtectedArrayBuffer = await file.arrayBuffer();
+
+    try {
+      pdfToJpgDoc = await pdfjsLib.getDocument({ data: new Uint8Array(activeProtectedArrayBuffer) }).promise;
+      document.getElementById('pdfPasswordBox').style.display = 'none';
+      document.getElementById('pdfToJpgControls').style.display = 'block';
+    } catch(err) {
+      if (err.name === 'PasswordException') {
+        document.getElementById('pdfPasswordBox').style.display = 'block';
+        document.getElementById('pdfToJpgControls').style.display = 'none';
+        document.getElementById('pdfPasswordInput').value = '';
+        document.getElementById('pdfPasswordError').style.display = 'none';
+      }
+    }
+  });
+
+  async function unlockAndLoadProtectedPdf() {
+    const pwd = document.getElementById('pdfPasswordInput').value.trim();
+    if (!pwd) return;
+
+    try {
+      pdfToJpgDoc = await pdfjsLib.getDocument({ data: new Uint8Array(activeProtectedArrayBuffer), password: pwd }).promise;
+      document.getElementById('pdfPasswordBox').style.display = 'none';
+      document.getElementById('pdfToJpgControls').style.display = 'block';
+      document.getElementById('pdfPasswordError').style.display = 'none';
+    } catch(e) {
+      document.getElementById('pdfPasswordError').style.display = 'block';
+    }
+  }
+
+  document.getElementById('startPdfToJpgBtn').addEventListener('click', async () => {
+    if (!pdfToJpgDoc) return;
+
+    const progress = document.getElementById('pdfConversionProgress');
+    const scaleFactor = activeDpiValue / 72;
+    const totalPages = pdfToJpgDoc.numPages;
+
+    if (totalPages === 1) {
+      progress.innerText = `⏳ Rendering 1 page at ${activeDpiValue} DPI...`;
+      const page = await pdfToJpgDoc.getPage(1);
+      const viewport = page.getViewport({ scale: scaleFactor });
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+      canvas.toBlob((blob) => {
+        const fileName = `Page_1_${activeDpiValue}DPI.jpg`;
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+        progress.innerText = `✅ Download Complete (1 Page @ ${activeDpiValue} DPI)`;
+        saveToHistory('PDF to JPG (Single)', fileName, blob, 'image/jpeg');
+      }, 'image/jpeg', 0.95);
+
+    } else {
+      const zip = new JSZip();
+      for (let i = 1; i <= totalPages; i++) {
+        progress.innerText = `⏳ Processing Page ${i} / ${totalPages} at ${activeDpiValue} DPI...`;
+        const page = await pdfToJpgDoc.getPage(i);
+        const viewport = page.getViewport({ scale: scaleFactor });
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        const imgData = canvas.toDataURL('image/jpeg', 0.95).split(',')[1];
+        zip.file(`Page_${i}_${activeDpiValue}DPI.jpg`, imgData, { base64: true });
+      }
+
+      progress.innerText = '📦 Creating ZIP archive...';
+      const zipContent = await zip.generateAsync({ type: 'blob' });
+      const fileName = `PDF_to_JPG_${activeDpiValue}DPI_Bundle.zip`;
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(zipContent);
+      link.download = fileName;
+      link.click();
+      progress.innerText = `✅ Complete! ${totalPages} Pages Downloaded in ZIP.`;
+      saveToHistory('PDF to JPG (Batch ZIP)', fileName, zipContent, 'application/zip');
+    }
+  });
+
+  // ==========================================================
+  // TAB 9: INTERACTIVE PDF COMPRESSOR
+  // ==========================================================
+  let compressOriginalFile = null;
+  let compressPdfDoc = null;
+  let origFileSizeInKB = 0;
+
+  document.getElementById('pdfCompressInput').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    compressOriginalFile = file;
+    origFileSizeInKB = (file.size / 1024).toFixed(1);
+    
+    document.getElementById('pdfCompressStatus').innerText = `✅ ${file.name}`;
+    document.getElementById('origFileSizeDisplay').innerText = formatBytes(file.size);
+
+    const arrayBuffer = await file.arrayBuffer();
+    compressPdfDoc = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+
+    document.getElementById('compressorControlsArea').style.display = 'block';
+    onCompressSliderChange(document.getElementById('compressQualitySlider').value);
+  });
+
+  function onCompressSliderChange(val) {
+    const quality = parseInt(val);
+    let levelText = 'Medium';
+    if (quality < 35) levelText = 'High Compression (Smallest Size)';
+    else if (quality > 75) levelText = 'Light Compression (High Quality)';
+    
+    document.getElementById('compressQualityLabel').innerText = `${quality}% (${levelText})`;
+
+    const ratio = Math.pow(quality / 100, 1.3);
+    const estBytes = compressOriginalFile.size * Math.max(0.15, ratio);
+    document.getElementById('estFileSizeDisplay').innerText = formatBytes(estBytes);
+  }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' Bytes';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(2) + ' MB';
+  }
+
+  document.getElementById('startCompressDownloadBtn').addEventListener('click', async () => {
+    if (!compressPdfDoc) return;
+
+    const progress = document.getElementById('compressProgressMsg');
+    const qualityVal = parseInt(document.getElementById('compressQualitySlider').value);
+    const jpegQuality = qualityVal / 100;
+    
+    const renderScale = Math.max(1.0, (qualityVal / 100) * 2.2); 
+    const totalPages = compressPdfDoc.numPages;
+
+    progress.innerText = `⏳ Compressing ${totalPages} pages...`;
+
+    const { jsPDF } = window.jspdf;
+    let outPdf = null;
+
+    for (let i = 1; i <= totalPages; i++) {
+      progress.innerText = `⏳ Compressing Page ${i} of ${totalPages}...`;
+      const page = await compressPdfDoc.getPage(i);
+      const viewport = page.getViewport({ scale: renderScale });
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      const imgData = canvas.toDataURL('image/jpeg', jpegQuality);
+
+      const orientation = viewport.width > viewport.height ? 'landscape' : 'portrait';
+      if (i === 1) {
+        outPdf = new jsPDF({ orientation: orientation, unit: 'pt', format: [viewport.width, viewport.height] });
+      } else {
+        outPdf.addPage([viewport.width, viewport.height], orientation);
+      }
+
+      outPdf.addImage(imgData, 'JPEG', 0, 0, viewport.width, viewport.height, undefined, 'FAST');
+    }
+
+    const fileName = `Compressed_${qualityVal}pct_${compressOriginalFile.name}`;
+    const blob = outPdf.output('blob');
+    progress.innerText = `✅ Compression Complete! Downloading...`;
+    outPdf.save(fileName);
+    saveToHistory('PDF Compressor', fileName, blob, 'application/pdf');
+  });
+
+  function initAllCanvases() {
+    clearCurrentCardInputs();
+    resetCardA4Sheet();
+
+    passportCtx.fillStyle = '#ffffff';
+    passportCtx.fillRect(0, 0, 413, 531);
+    passportCtx.fillStyle = '#94a3b8';
+    passportCtx.font = 'bold 20px Poppins';
+    passportCtx.textAlign = 'center';
+    passportCtx.fillText('Passport Preview', 413 / 2, 531 / 2);
+
+    namePassportCtx.fillStyle = '#ffffff';
+    namePassportCtx.fillRect(0, 0, 413, 531);
+    namePassportCtx.fillStyle = '#94a3b8';
+    namePassportCtx.font = 'bold 20px Poppins';
+    namePassportCtx.textAlign = 'center';
+    namePassportCtx.fillText('Name & Date Preview', 413 / 2, 531 / 2);
+
+    ctx4x6.fillStyle = '#ffffff';
+    ctx4x6.fillRect(0, 0, 1200, 1800);
+    ctx4x6.fillStyle = '#94a3b8';
+    ctx4x6.font = 'bold 36px Poppins';
+    ctx4x6.textAlign = 'center';
+    ctx4x6.fillText('4×6 Photo Preview', 1200 / 2, 1800 / 2);
+
+    a4_4x6_SheetCtx.fillStyle = '#ffffff';
+    a4_4x6_SheetCtx.fillRect(0, 0, 2480, 3508);
   }
 </script>
 
