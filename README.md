@@ -198,26 +198,6 @@
     }
     .logout-btn:hover { background: rgba(239, 68, 68, 0.4); }
 
-    .btn-extend-service {
-      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-      color: #fff;
-      border: none;
-      padding: 7px 16px;
-      font-size: 12px;
-      font-weight: 700;
-      border-radius: 20px;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-extend-service:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 25px rgba(245, 158, 11, 0.7);
-    }
-
     h1 { 
       background: linear-gradient(to right, #38bdf8, #a855f7, #ec4899);
       -webkit-background-clip: text;
@@ -1228,7 +1208,7 @@
   const MERCHANT_UPI_ID = "SPICED92849611072221935@yesbankltd";
 
   // ==========================================================
-  // DYNAMIC VALIDITY & SUBSCRIPTION ENGINE
+  // DYNAMIC PLAN VALIDATION ENGINE
   // ==========================================================
   function getActiveValidityExpiryTime() {
     const expTime = localStorage.getItem('system_plan_expiry_time');
@@ -1242,7 +1222,7 @@
 
   function checkAndHandleExpiry() {
     const expTime = getActiveValidityExpiryTime();
-    if (!expTime) return null;
+    if (!expTime) return 0; // If no plan purchased yet
 
     const remainingMs = expTime - Date.now();
     const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
@@ -1266,9 +1246,9 @@
     const badge = document.getElementById('validityCounterBadge');
     const remainingDays = checkAndHandleExpiry();
 
-    if (remainingDays !== null && remainingDays > 0) {
+    if (remainingDays > 0) {
       badge.innerHTML = `⏳ Plan Validation: <strong style="color:#fbbf24;">${remainingDays} Days Left</strong>`;
-      if (remainingDays <= 15) {
+      if (remainingDays <= 5) {
         badge.style.borderColor = '#ef4444';
         badge.style.color = '#f87171';
         badge.style.background = 'rgba(239, 68, 68, 0.15)';
@@ -1341,7 +1321,7 @@
     loginPass.value = '';
   }
 
-  function activatePlanAndOpenApp() {
+  function confirmPaymentAndExtend() {
     const currentExp = getActiveValidityExpiryTime() || Date.now();
     const baseTime = Math.max(Date.now(), currentExp);
     const newExpTime = baseTime + (selectedPlanDays * 24 * 60 * 60 * 1000);
@@ -1356,10 +1336,11 @@
     updateValidityDisplay();
     initAllCanvases();
     cleanupOldHistoryRecords();
+    alert(`🎉 पेमेंट सफल रहा!\nआपका प्लान एक्टिव हो गया है (${selectedPlanDays} Days Validity)।`);
   }
 
   // ==========================================================
-  // INDEXEDDB DYNAMIC STORAGE ENGINE (30 or 365 Days Retention)
+  // INDEXEDDB DYNAMIC STORAGE ENGINE
   // ==========================================================
   const DB_NAME = 'PrintPortal30DayDB';
   const DB_STORE = 'print_records';
@@ -1590,14 +1571,13 @@
 
       const remainingDays = checkAndHandleExpiry();
 
-      // If active plan already exists and is valid, enter directly
+      // If active plan already exists and is valid, enter directly; otherwise force plan selection
       if (remainingDays !== null && remainingDays > 0) {
         mainApp.style.display = 'block';
         updateValidityDisplay();
         initAllCanvases();
         cleanupOldHistoryRecords();
       } else {
-        // Direct Paywall Screen on Login
         document.getElementById('planSelectionScreen').style.display = 'block';
       }
     } else {
