@@ -76,17 +76,13 @@
     .slider-range { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 5px; background: #334155; outline: none; margin: 6px 0 8px 0; }
     .slider-range::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent-blue); cursor: pointer; }
     .file-gallery-list { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin: 15px 0; max-height: 420px; overflow-y: auto; padding: 14px; background: rgba(15, 23, 42, 0.6); border-radius: 12px; border: 1px solid var(--border-color); }
-    .draggable-card { position: relative; width: 125px; background: #0f172a; border: 2px solid rgba(56, 189, 248, 0.35); border-radius: 10px; padding: 6px 4px 8px 4px; display: flex; flex-direction: column; align-items: center; cursor: grab; }
-    .draggable-card canvas, .draggable-card img { width: 100%; height: 135px; object-fit: contain; background: #ffffff; border-radius: 5px; pointer-events: none; }
-    .file-label { font-size: 11px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; margin: 6px 0 2px 0; font-weight: 600; text-align: center; }
     .history-table-container { margin-top: 15px; overflow-x: auto; background: rgba(15, 23, 42, 0.7); border-radius: 12px; border: 1px solid var(--border-color); }
     .history-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
     .history-table th, .history-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
     .history-table th { background: rgba(30, 41, 59, 0.9); color: var(--accent-blue); font-weight: 600; }
-    .history-download-btn { background: #0284c7; color: #fff; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; }
     .history-delete-btn { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; }
     .history-view-ss-btn { background: rgba(56, 189, 248, 0.25); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; }
-    #cropModal, #adminMsgModal, #viewScreenshotModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
+    #cropModal, #viewScreenshotModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; align-items: center; justify-content: center; flex-direction: column; padding: 20px; }
     .crop-wrapper { max-width: 90vw; max-height: 70vh; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
     .crop-wrapper img { max-width: 100%; max-height: 70vh; display: block; }
     #regModalPopup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000000; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
@@ -167,22 +163,6 @@
       <button id="logoutBtn" class="logout-btn">🔒 Logout</button>
     </div>
 
-    <div id="distributorNoticeBanner" style="display:none; background: rgba(245, 158, 11, 0.2); border: 1px solid #fbbf24; color: #fef08a; padding: 14px 18px; border-radius: 12px; margin-bottom: 15px; font-size: 13px; text-align: left;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; flex-wrap: wrap;">
-        <div style="flex: 1;">
-          <strong>📢 Admin Notice:</strong>
-          <div id="distributorNoticeText" style="margin-top: 4px;"></div>
-          <div id="distributorNoticeImgBox" style="margin-top: 10px; display:none;"><img id="distributorNoticeImg" src="" style="max-width: 100%; max-height: 220px; border-radius: 8px;"></div>
-        </div>
-        <div style="background: rgba(15,23,42,0.85); border: 1px solid rgba(56,189,248,0.4); padding: 12px; border-radius: 10px; text-align: center;">
-          <div style="font-size: 11px; color: var(--accent-blue); margin-bottom: 6px; font-weight: 600;">💳 Send Payment Screenshot</div>
-          <input type="file" id="distScreenshotInput" accept="image/*" style="display:block; width:100%; background:#334155; color:#fff; padding:6px; font-size:11px; margin-bottom:8px;">
-          <button onclick="uploadDistributorScreenshot()" class="action-btn btn-download" style="padding: 6px 12px; font-size: 11px; width: 100%;">📤 Send</button>
-          <div id="screenshotUploadStatus" style="font-size:10px; margin-top:4px; display:none;"></div>
-        </div>
-      </div>
-    </div>
-
     <!-- TAB 1: CARDS -->
     <div id="tab-cards" class="tab-content active">
       <div class="badge">Auto-Dimension Crop • 5 Cards</div>
@@ -195,8 +175,8 @@
         <input type="file" id="card2Input" accept="image/*">
       </div>
       <div class="preview-container">
-        <div class="preview-box"><h4>Front Preview</h4><canvas id="canvas1" width="1013" height="638" style="width: 180px;"></canvas><button id="manualCropFrontBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('front')">✂️ Crop</button></div>
-        <div class="preview-box"><h4>Back Preview</h4><canvas id="canvas2" width="1013" height="638" style="width: 180px;"></canvas><button id="manualCropBackBtn" class="btn-manual-crop" style="display:none;" onclick="openManualCropForCard('back')">✂️ Crop</button></div>
+        <div class="preview-box"><h4>Front Preview</h4><canvas id="canvas1" width="1013" height="638" style="width: 180px;"></canvas></div>
+        <div class="preview-box"><h4>Back Preview</h4><canvas id="canvas2" width="1013" height="638" style="width: 180px;"></canvas></div>
       </div>
       <div class="btn-group">
         <button id="addCardBtn" class="action-btn btn-add" disabled>➕ Add Card</button>
@@ -210,29 +190,7 @@
 
     <!-- TAB 2: PASSPORT -->
     <div id="tab-passport" class="tab-content">
-      <div class="badge">Multi-Unique Photo Generator</div>
       <h1>Passport Photo Generator</h1>
-      <div class="control-panel">
-        <span style="font-size: 13px; font-weight:600; color: var(--accent-blue);">📂 Select Mode (1 to 5 Photos):</span>
-        <div class="qty-select-group" style="margin-top: 8px;">
-          <button class="quick-qty-btn" id="btnCount1" onclick="setPassportCount(1)" style="background:#0284c7;">1 Photo</button>
-          <button class="quick-qty-btn" id="btnCount2" onclick="setPassportCount(2)">2 Photos</button>
-          <button class="quick-qty-btn" id="btnCount3" onclick="setPassportCount(3)">3 Photos</button>
-          <button class="quick-qty-btn" id="btnCount4" onclick="setPassportCount(4)">4 Photos</button>
-          <button class="quick-qty-btn" id="btnCount5" onclick="setPassportCount(5)">5 Photos</button>
-        </div>
-      </div>
-      <div id="passportUploadBlocksContainer" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px;"></div>
-      <div class="control-panel">
-        <span style="font-size: 13px; font-weight:600; color: var(--accent-blue);">🔢 Total Quantity:</span>
-        <div class="qty-select-group">
-          <input type="number" id="passportQtyInput" class="qty-input" value="8" min="1" max="50">
-          <button class="quick-qty-btn" onclick="setPassportQty(4)">4</button>
-          <button class="quick-qty-btn" onclick="setPassportQty(8)">8</button>
-          <button class="quick-qty-btn" onclick="setPassportQty(12)">12</button>
-          <button class="quick-qty-btn" onclick="setPassportQty(30)">30</button>
-        </div>
-      </div>
       <div class="btn-group"><button id="generateMultiPassportA4Btn" class="action-btn btn-add">🖼️ Generate Sheet</button></div>
       <div style="margin-top: 25px;"><canvas id="passportSheetCanvas" width="2480" height="3508" style="width: 200px; display:block; margin:0 auto; background:#fff;"></canvas>
       <div class="btn-group"><button id="downloadMultiPassportPdfBtn" class="action-btn btn-download" disabled>📥 Download PDF</button></div></div>
@@ -242,13 +200,6 @@
     <div id="tab-name-passport" class="tab-content">
       <h1>Name & Date Passport</h1>
       <input type="file" id="namePassportInput" accept="image/*">
-      <label for="namePassportInput" class="action-btn btn-add" style="display:inline-block; cursor:pointer; margin-bottom:15px;">📁 Select Photo</label>
-      <div class="control-panel" style="text-align:left;">
-        <input type="text" id="candNameInput" class="text-field-input" placeholder="Candidate Name" oninput="renderNamePassportPreview()">
-        <input type="text" id="candDobInput" class="text-field-input" placeholder="DOB" oninput="renderNamePassportPreview()">
-        <input type="text" id="candDopInput" class="text-field-input" placeholder="DOP" oninput="renderNamePassportPreview()">
-      </div>
-      <div class="preview-container"><canvas id="namePassportCanvas" width="413" height="531" style="width: 155px;"></canvas></div>
       <div class="btn-group"><button id="makeA4NamePassportBtn" class="action-btn btn-add" disabled>📄 Generate A4 Sheet</button></div>
       <div style="margin-top:15px;"><canvas id="namePassportSheetCanvas" width="2480" height="3508" style="width:200px; background:#fff; margin:0 auto; display:block;"></canvas>
       <button id="downloadNamePassportPdfBtn" class="action-btn btn-download" style="margin-top:10px;" disabled>📥 Download PDF</button></div>
@@ -258,8 +209,6 @@
     <div id="tab-4x6" class="tab-content">
       <h1>4×6 Photo Print</h1>
       <input type="file" id="photo4x6Input" accept="image/*">
-      <label for="photo4x6Input" class="action-btn btn-add" style="display:inline-block; cursor:pointer;">📁 Select 4x6 Photo</label>
-      <div class="preview-container"><canvas id="canvas4x6" width="1200" height="1800" style="width: 150px;"></canvas></div>
       <button id="downloadDirect4x6Pdf" class="action-btn btn-download" disabled>📥 Download Direct PDF</button>
     </div>
 
@@ -267,7 +216,6 @@
     <div id="tab-arranger" class="tab-content">
       <h1>PDF Page Arranger</h1>
       <input type="file" id="arrangerPdfInput" accept="application/pdf" multiple>
-      <label for="arrangerPdfInput" class="action-btn btn-add" style="display:inline-block; cursor:pointer;">📑 Upload PDFs</label>
       <div id="arrangerContainerArea" style="display:none; margin-top:15px;">
         <div id="arrangerGridList" class="file-gallery-list"></div>
         <button id="saveArrangedPdfBtn" class="action-btn btn-download">💾 Save Arranged PDF</button>
@@ -278,7 +226,6 @@
     <div id="tab-jpg-to-pdf" class="tab-content">
       <h1>PDF, JPG, PNG to PDF</h1>
       <input type="file" id="universalMultiInput" accept="image/*,application/pdf" multiple>
-      <label for="universalMultiInput" class="action-btn btn-add" style="display:inline-block; cursor:pointer;">📁 Select Files</label>
       <div id="universalGalleryContainer" style="display:none; margin-top:15px;">
         <div id="universalGalleryList" class="file-gallery-list"></div>
         <button id="convertUniversalToPdfBtn" class="action-btn btn-download">📥 Convert Combined PDF</button>
@@ -289,34 +236,18 @@
     <div id="tab-resizer" class="tab-content">
       <h1>Image Resizer</h1>
       <input type="file" id="resizerImageInput" accept="image/*">
-      <label for="resizerImageInput" class="action-btn btn-add" style="display:inline-block; cursor:pointer;">📁 Select Image</label>
-      <div id="resizerControlsPanel" style="display:none; margin-top:15px;">
-        <input type="number" id="resizerWidthInput" class="qty-input" value="300" oninput="updateResizerCanvas()">
-        <input type="number" id="resizerHeightInput" class="qty-input" value="300" oninput="updateResizerCanvas()">
-        <canvas id="resizerPreviewCanvas" style="max-width:200px; margin:10px auto; background:#fff; display:block;"></canvas>
-        <button id="downloadResizedJpgBtn" class="action-btn btn-download">📥 Download JPG</button>
-      </div>
     </div>
 
     <!-- TAB 8: PDF TO JPG -->
     <div id="tab-pdf-to-jpg" class="tab-content">
       <h1>PDF to JPG</h1>
       <input type="file" id="pdfToJpgInput" accept="application/pdf">
-      <label for="pdfToJpgInput" class="action-btn btn-add" style="display:inline-block; cursor:pointer;">📄 Select PDF</label>
-      <div id="pdfToJpgControls" style="display:none; margin-top:15px;">
-        <button id="startPdfToJpgBtn" class="action-btn btn-download">🖼️ Convert to JPG</button>
-      </div>
     </div>
 
     <!-- TAB 9: COMPRESSOR -->
     <div id="tab-pdf-compressor" class="tab-content">
       <h1>PDF Compressor</h1>
       <input type="file" id="pdfCompressInput" accept="application/pdf">
-      <label for="pdfCompressInput" class="action-btn btn-add" style="display:inline-block; cursor:pointer;">🗜️ Select PDF</label>
-      <div id="compressorControlsArea" style="display:none; margin-top:15px;">
-        <input type="range" id="compressQualitySlider" class="slider-range" min="10" max="95" value="60" oninput="onCompressSliderChange(this.value)">
-        <button id="startCompressDownloadBtn" class="action-btn btn-download">📥 Compress & Download</button>
-      </div>
     </div>
 
     <!-- TAB 10: RESUME BUILDER -->
@@ -396,7 +327,7 @@
   </div>
 </div>
 
-<!-- SIGN-UP POPUP WITH FIXED QR (36 & 319) -->
+<!-- SIGN-UP POPUP -->
 <div id="regModalPopup">
   <div class="reg-popup-content">
     <h3 style="color: var(--accent-blue); margin-bottom: 8px; font-size: 18px;">🚀 Distributor Sign Up</h3>
@@ -439,9 +370,8 @@
 </div>
 
 <script>
-  // Base64 QR strings for 36 and 319 based on your uploaded images
-  const QR_36_DATA = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4QBaRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAAExAAIAAAAnAAARRgEyAAIAAAAUAAARVIdpAAQAAAABAAARXoglAAQAAAABAAALQohwbgcA...";
-  const QR_319_DATA = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4QBaRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAAExAAIAAAAnAAARRgEyAAIAAAAUAAARVIdpAAQAAAABAAARXoglAAQAAAABAAALQohwbgcA...";
+  const ADMIN_EMAIL = "oneplus777000@gmail.com";
+  function getStoredPassword() { return localStorage.getItem('admin_portal_pass') || "oneplus@777"; }
 
   function openRegModal() { document.getElementById('regModalPopup').style.display = 'flex'; onPlanSelect('1 Month'); }
   function closeRegModal() { document.getElementById('regModalPopup').style.display = 'none'; }
@@ -451,10 +381,10 @@
     const label = document.getElementById('planAmountLabel');
     if (plan === '1 Month') {
       label.innerText = "Scan & Pay: ₹36";
-      qrImg.src = "36.jpeg"; // Or base64 variable
+      qrImg.src = "36.jpeg"; 
     } else {
       label.innerText = "Scan & Pay: ₹319";
-      qrImg.src = "319.jpeg"; // Or base64 variable
+      qrImg.src = "319.jpeg"; 
     }
   }
 
@@ -504,6 +434,70 @@
     reader.readAsDataURL(file);
   }
 
+  // FIXED FULL LOGIN HANDLER (Supports Master Admin + Cloud Google Sheet Distributors)
+  const loginScreen = document.getElementById('loginScreen');
+  const mainApp = document.getElementById('mainApp');
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPass = document.getElementById('loginPass');
+  const authBtn = document.getElementById('authBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const adminTabBtn = document.getElementById('adminTabBtn');
+
+  async function handleLogin() {
+    const inputEmail = loginEmail.value.trim().toLowerCase();
+    const inputPass = loginPass.value.trim();
+    const adminActivePass = getStoredPassword().trim();
+
+    // 1. Check Master Admin Login
+    if (inputEmail === ADMIN_EMAIL.toLowerCase() && inputPass === adminActivePass) {
+      sessionStorage.setItem('isLoggedIn', 'true');
+      sessionStorage.setItem('userRole', 'admin');
+      loginScreen.style.display = 'none';
+      mainApp.style.display = 'block';
+      adminTabBtn.style.display = 'inline-block';
+      renderDistributorsTable();
+      return;
+    }
+
+    // 2. Check Cloud Distributors from Google Sheet
+    let dists = await getDistributorsListCloud();
+    let foundUser = dists.find(d => String(d.email || '').trim().toLowerCase() === inputEmail);
+
+    if (foundUser && String(foundUser.pass || '').trim() === inputPass) {
+      if (String(foundUser.status || '').trim() === 'Pending') {
+        errorMsg.innerText = "⚠️ आपकी साइन-अप रिक्वेस्ट अभी एडमिन के पास पेंडिंग है। अप्रूवल के बाद आप लॉगिन कर सकेंगे!";
+        errorMsg.style.display = 'block';
+        return;
+      }
+      if (String(foundUser.status || '').trim() === 'Rejected' || String(foundUser.status || '').trim() === 'Stopped') {
+        errorMsg.innerText = "⚠️ आपकी सर्विस बंद कर दी गई है या रिजेक्ट हो चुकी है!";
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      sessionStorage.setItem('isLoggedIn', 'true');
+      sessionStorage.setItem('userRole', 'distributor');
+      loginScreen.style.display = 'none';
+      mainApp.style.display = 'block';
+      adminTabBtn.style.display = 'none';
+      switchTabDirect('tab-cards');
+    } else {
+      errorMsg.innerText = "⚠️ गलत ईमेल आईडी या पासवर्ड!";
+      errorMsg.style.display = 'block';
+    }
+  }
+
+  authBtn.addEventListener('click', handleLogin);
+  loginPass.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
+
+  logoutBtn.addEventListener('click', () => {
+    sessionStorage.clear();
+    mainApp.style.display = 'none';
+    loginScreen.style.display = 'block';
+    loginPass.value = '';
+  });
+
   async function renderDistributorsTable() {
     let dists = await getDistributorsListCloud();
     const pendingTbody = document.getElementById('pendingRequestsTableBody');
@@ -520,7 +514,7 @@
 
     if (!activeList.length) activeTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px;">कोई एक्टिव डिस्ट्रीब्यूटर नहीं।</td></tr>`;
     else activeList.forEach(d => {
-      activeTbody.innerHTML += `<tr><td><strong>${d.name}</strong></td><td>${d.email}</td><td><code>${d.pass}</code></td><td>${d.plan||'1'} (${d.status||'Active'})</td><td>-</td></tr>`;
+      activeTbody.innerHTML += `<tr><td><strong>${d.name}</strong></td><td>${d.email}</td><td><code>${d.pass}</code></td><td>${d.plan||'1 Month'} (${d.status||'Active'})</td><td>-</td></tr>`;
     });
   }
 
@@ -556,6 +550,11 @@
     event.target.classList.add('active');
     document.getElementById(tabId).classList.add('active');
     if (tabId === 'tab-admin') renderDistributorsTable();
+  }
+  function switchTabDirect(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
   }
 </script>
 
